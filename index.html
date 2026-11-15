@@ -8,7 +8,7 @@
 <link rel="icon" type="image/svg+xml" href="assets/valeva-simbolo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* Concepto: "vale, va." — la respuesta de quien está harto de que le quieran ennoviar, pero este plan sí le convence.
    Lenguaje visual de mensaje de móvil: blanco, tinta casi negra, un solo azul (el de la burbuja de "vale, va.").
@@ -132,8 +132,10 @@ section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
 .pasos b{font-size:17px}
 .pasos span{color:var(--muted);font-size:15px}
 
-.cita{padding:36px 0;border-top:1px solid var(--line);display:grid;gap:6px}
-.cita p{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.25}
+.cita{padding:48px 0;border-top:1px solid var(--line);display:grid;gap:6px}
+.cita p{font-size:clamp(30px,6vw,46px);letter-spacing:-.03em;margin:0;line-height:1.12}
+.cita .fina{font-weight:300}
+.cita .gruesa{font-weight:800;color:var(--accent)}
 .cita span{font-size:14px;color:var(--muted)}
 
 /* Fotos */
@@ -341,7 +343,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   </section>
 
   <div class="cita">
-    <p>Lo de siempre: amigos, un bar y un sábado.<br>Pero no te quedes en casa.</p>
+    <p><span class="fina">Lo de siempre: amigos, un bar y un sábado.</span><br><span class="gruesa">Pero no te quedes en casa.</span></p>
   </div>
 
 
