@@ -49,6 +49,9 @@ section,#fechas,#como,#preguntas,#bares,#reserva{scroll-margin-top:96px}
 .logo{display:inline-flex;align-items:center;gap:.32em;font-size:26px;font-weight:800;letter-spacing:-.05em;color:var(--ink);text-decoration:none;line-height:1}
 .logo .sym{width:1.45em;height:auto;flex:none}
 .logo b{color:var(--accent);font-weight:800}
+.logo>.marca{display:inline-grid;gap:.08em;max-width:none;overflow:visible}
+.logo .ciudad{display:flex;justify-content:space-between;font-size:.36em;font-weight:700;letter-spacing:0;color:var(--ink);padding:0 .08em}
+.logo .ciudad i{font-style:normal}
 nav.top{display:flex;gap:20px}
 nav.top a{color:var(--muted);text-decoration:none;font-size:15px;font-weight:600}
 nav.top a:hover{color:var(--ink)}
@@ -227,7 +230,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
 <body>
 <div class="wrap">
   <header class="top">
-    <a class="logo" href="#" aria-label="Valeva, inicio"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span>vale<b>va</b></span></a>
+    <a class="logo" href="#" aria-label="Valeva, inicio"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span class="marca"><span>vale<b>va</b></span><span class="ciudad" aria-hidden="true"><i>V</i><i>A</i><i>L</i><i>E</i><i>N</i><i>C</i><i>I</i><i>A</i></span></span></a>
     <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="l1" d="M4 7h16"></path><path class="l2" d="M4 12h16"></path><path class="l3" d="M4 17h16"></path></svg>
     </button>
@@ -670,7 +673,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     nw.classList.add("on");nw.removeAttribute("aria-hidden");
     setTimeout(function(){if(old.classList.contains("out")){old.classList.add("notrans");old.classList.remove("out");void old.offsetWidth;old.classList.remove("notrans");}},650);
     dots.forEach(function(d,k){d.setAttribute("aria-pressed",k===i?"true":"false");});}
-  function start(){if(reduce)return;stop();timer=setInterval(function(){go(i+1);},3000);}
+  function start(){if(reduce)return;stop();timer=setInterval(function(){go(i+1);},4000);}
   function stop(){if(timer){clearInterval(timer);timer=null;}}
   dots.forEach(function(d,k){d.addEventListener("click",function(){go(k);start();});});
   var c=document.querySelector(".carrusel");
