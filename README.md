@@ -14,12 +14,9 @@ Sin actividades, sin presentaciones, sin presión. Vas con tus amigos, te sienta
 
 ## Estado
 
-Es un prototipo funcional en el navegador:
-
-- Fechas, estadísticas por sexo y franja de edad, y reserva individual o en grupo de hasta 6 personas.
-- **Los datos son de ejemplo y el pago está simulado**: no se guarda ninguna reserva ni se cobra nada.
-
-Siguiente paso: guardar las reservas en una base de datos, cobrar con tarjeta y enviar automáticamente la ubicación del bar a las 18:30.
+- Las fechas, plazas libres y estadísticas anónimas por sexo y edad se leen de la base de datos (Supabase, proyecto «Eventos»).
+- Al pulsar **Pagar** se crea la reserva y el cliente paga en la pasarela de **Stripe**. Al volver, la web muestra la entrada con su código QR (un QR por reserva, válido para todo el grupo).
+- Las noches se crean y editan en la tabla `events` de Supabase.
 
 ## Publicarla con GitHub Pages
 
