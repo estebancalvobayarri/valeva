@@ -42,10 +42,9 @@ body.scrolled header.top{padding:12px 0}
 section,#fechas,#como,#preguntas,#bares,#reserva{scroll-margin-top:96px}
 .logo>span{display:inline-block;max-width:6em;overflow:hidden;transition:max-width .25s ease,opacity .2s ease}
 .menu-btn{display:none;width:48px;height:48px;border:0;border-radius:12px;background:transparent;margin-left:-8px;color:var(--ink);cursor:pointer;place-items:center;padding:0}
-.menu-btn path{transition:transform .2s,opacity .2s;transform-origin:12px 12px}
-.menu-btn[aria-expanded="true"] .l1{transform:translateY(5px) rotate(45deg)}
-.menu-btn[aria-expanded="true"] .l2{opacity:0}
-.menu-btn[aria-expanded="true"] .l3{transform:translateY(-5px) rotate(-45deg)}
+.menu-btn .ic-x{display:none}
+.menu-btn[aria-expanded="true"] .ic-x{display:block}
+.menu-btn[aria-expanded="true"] .ic-menu{display:none}
 .logo{display:inline-flex;align-items:center;gap:.32em;font-size:26px;font-weight:800;letter-spacing:-.05em;color:var(--ink);text-decoration:none;line-height:1}
 .logo .sym{width:1.45em;height:auto;flex:none}
 .logo b{color:var(--accent);font-weight:800}
@@ -257,7 +256,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <header class="top">
     <a class="logo" href="#" aria-label="Valeva, inicio"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span class="marca"><span>vale<b>va</b></span><span class="ciudad" aria-hidden="true"><i>V</i><i>A</i><i>L</i><i>E</i><i>N</i><i>C</i><i>I</i><i>A</i></span></span></a>
     <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="l1" d="M4 7h16"></path><path class="l2" d="M4 12h16"></path><path class="l3" d="M4 17h16"></path></svg>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><g class="ic-menu"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></g><g class="ic-x"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></g></svg>
     </button>
     <nav class="top" id="menu" aria-label="Secciones">
       <a href="#como">Cómo funciona</a>
