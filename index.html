@@ -66,16 +66,6 @@ nav.top a:hover{color:var(--ink)}
 .bub.out{background:var(--accent);color:#fff;border-bottom-right-radius:6px;justify-self:end;font-weight:700;font-size:18px}
 .chat .leido{justify-self:end;font-size:12px;color:var(--muted);margin-right:4px}
 .carrusel{display:grid;gap:12px;max-width:440px}
-.bub.typing{display:none;justify-self:end;gap:5px;align-items:center;background:var(--accent);border-bottom-right-radius:6px;padding:15px 16px}
-.bub.typing i{width:7px;height:7px;border-radius:50%;background:#fff;opacity:.5;animation:tecleo 1s infinite ease-in-out}
-.bub.typing i:nth-child(2){animation-delay:.15s}.bub.typing i:nth-child(3){animation-delay:.3s}
-@keyframes tecleo{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
-.slide.intro .bub.out,.slide.intro .leido,.slide.intro .bub.typing.oculto{display:none}
-.slide.intro .bub.typing{display:flex}
-.bub.out.pop{animation:pop .35s cubic-bezier(.2,.8,.3,1.3)}
-.leido.pop{animation:aparece .3s ease}
-@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes aparece{from{opacity:0}to{opacity:1}}
 .slides{display:grid;overflow:hidden;border-radius:24px}
 .slides .slide{grid-area:1/1;align-content:start;transform:translateX(-105%);transition:transform .6s cubic-bezier(.4,0,.2,1)}
 .slides .slide.on{transform:translateX(0)}
@@ -240,7 +230,6 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
       <div class="chat slide on" role="group" aria-roledescription="conversación" aria-label="1 de 3: Lucía">
         <span class="quien">Lucía</span>
         <div class="bub in">¿Te vienes el sábado? Es un bar solo para solteros cristianos. Sin dinámicas ni presentaciones: vamos los de siempre y ya está.</div>
-        <div class="bub typing" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="bub out">Vale, va.</div>
         <span class="leido">Leído 21:14</span>
       </div>
@@ -590,25 +579,13 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     nw.classList.add("on");nw.removeAttribute("aria-hidden");
     setTimeout(function(){if(old.classList.contains("out")){old.classList.add("notrans");old.classList.remove("out");void old.offsetWidth;old.classList.remove("notrans");}},650);
     dots.forEach(function(d,k){d.setAttribute("aria-pressed",k===i?"true":"false");});}
-  var listo=false;
-  function start(){if(reduce||!listo)return;stop();timer=setInterval(function(){go(i+1);},3000);}
+  function start(){if(reduce)return;stop();timer=setInterval(function(){go(i+1);},3000);}
   function stop(){if(timer){clearInterval(timer);timer=null;}}
   dots.forEach(function(d,k){d.addEventListener("click",function(){go(k);start();});});
   var c=document.querySelector(".carrusel");
   c.addEventListener("mouseenter",stop);c.addEventListener("mouseleave",start);
   c.addEventListener("focusin",stop);c.addEventListener("focusout",start);
-  var first=slides[0],typ=first.querySelector(".typing");
-  if(reduce){listo=true;start();}
-  else{
-    first.classList.add("intro");typ.classList.add("oculto");
-    setTimeout(function(){typ.classList.remove("oculto");},900);
-    setTimeout(function(){
-      first.classList.remove("intro");
-      first.querySelector(".bub.out").classList.add("pop");
-      setTimeout(function(){first.querySelector(".leido").classList.add("pop");},350);
-      listo=true;start();
-    },2600);
-  }
+  start();
 })();
 
 (function(){
