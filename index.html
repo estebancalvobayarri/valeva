@@ -41,7 +41,7 @@ header.top{position:sticky;top:0;z-index:50;background:#fff;box-shadow:0 0 0 100
 body.scrolled header.top{padding:12px 0}
 section,#fechas,#como,#preguntas,#bares,#reserva{scroll-margin-top:96px}
 .logo>span{display:inline-block;max-width:6em;overflow:hidden;transition:max-width .25s ease,opacity .2s ease}
-.menu-btn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);cursor:pointer;place-items:center;padding:0}
+.menu-btn{display:none;width:48px;height:48px;border:0;border-radius:12px;background:transparent;margin-left:-8px;color:var(--ink);cursor:pointer;place-items:center;padding:0}
 .menu-btn path{transition:transform .2s,opacity .2s;transform-origin:12px 12px}
 .menu-btn[aria-expanded="true"] .l1{transform:translateY(5px) rotate(45deg)}
 .menu-btn[aria-expanded="true"] .l2{opacity:0}
@@ -164,6 +164,16 @@ section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
 
 footer .legal a{color:var(--muted)}
 
+/* Aviso de nuevas fechas */
+.avisos{background:var(--accent-soft);border-radius:22px;padding:24px;display:grid;gap:16px}
+.avisos p{margin:0}
+.avisos form{gap:12px}
+.avisos .linea{display:flex;gap:10px;flex-wrap:wrap}
+.avisos .linea input{flex:1 1 220px;border-color:#d6e0f7}
+.avisos .linea .btn{flex:none}
+.avisos .ok{display:grid;gap:10px}
+.avisos .ok .bub{justify-self:start}
+
 h1.azul,h2.azul{color:var(--accent)}
 .btn.pago{background:var(--accent)}
 .btn.pago:hover{background:#1d47b0}
@@ -238,7 +248,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <header class="top">
     <a class="logo" href="#" aria-label="Valeva, inicio"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span class="marca"><span>vale<b>va</b></span><span class="ciudad" aria-hidden="true"><i>V</i><i>A</i><i>L</i><i>E</i><i>N</i><i>C</i><i>I</i><i>A</i></span></span></a>
     <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="l1" d="M4 7h16"></path><path class="l2" d="M4 12h16"></path><path class="l3" d="M4 17h16"></path></svg>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="l1" d="M4 7h16"></path><path class="l2" d="M4 12h16"></path><path class="l3" d="M4 17h16"></path></svg>
     </button>
     <nav class="top" id="menu" aria-label="Secciones">
       <a href="#como">Cómo funciona</a>
@@ -350,6 +360,26 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
         </div>
       </div>
     </article>
+  </section>
+
+  <section id="avisos" aria-labelledby="t-avisos">
+    <div class="avisos">
+      <span class="kicker">Nuevas fechas</span>
+      <h2 id="t-avisos">¿Ningún sábado te cuadra? <em>Te avisamos.</em></h2>
+      <p>Déjanos tu email y te escribimos cuando abramos fechas nuevas. Solo eso: nada de spam.</p>
+      <form id="f-avisos" novalidate>
+        <div class="linea">
+          <input type="email" id="a-email" autocomplete="email" placeholder="tu@email.com" aria-label="Tu email">
+          <button class="btn" type="submit">Avisadme</button>
+        </div>
+        <label class="check"><input type="checkbox" id="a-rgpd"><span>Acepto recibir emails de Valeva con nuevas fechas, según la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>. Puedo darme de baja cuando quiera.</span></label>
+        <p class="err" id="a-err" role="alert"></p>
+      </form>
+      <div class="ok hidden" id="a-ok" aria-live="polite">
+        <div class="bub out">Vale, va.</div>
+        <p id="a-ok-t"></p>
+      </div>
+    </div>
   </section>
 
   <div class="cita">
@@ -689,6 +719,21 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   c.addEventListener("mouseenter",stop);c.addEventListener("mouseleave",start);
   c.addEventListener("focusin",stop);c.addEventListener("focusout",start);
   start();
+})();
+
+(function(){
+  var f=document.getElementById("f-avisos"),e=document.getElementById("a-email"),err=document.getElementById("a-err");
+  f.addEventListener("submit",function(ev){
+    ev.preventDefault();
+    var v=e.value.trim(),msg="";
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) msg="Revisa el email: parece incompleto.";
+    else if(!document.getElementById("a-rgpd").checked) msg="Marca la casilla para que podamos escribirte.";
+    err.textContent=msg;
+    if(msg) return;
+    /* Pendiente: guardar el email en la lista de avisos */
+    document.getElementById("a-ok-t").textContent="Listo. Te escribiremos a "+v+" en cuanto haya fechas nuevas.";
+    f.classList.add("hidden");document.getElementById("a-ok").classList.remove("hidden");
+  });
 })();
 
 (function(){
