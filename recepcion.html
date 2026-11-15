@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f12">
+<meta name="robots" content="noindex, nofollow">
+<title>Recepción · Valeva</title>
+<style>
+  :root { --bg:#0f0f12; --card:#1a1a20; --line:#2a2a33; --txt:#f2f2f5; --mut:#9a9aa6;
+          --ok:#1fbf6a; --bad:#e5484d; --warn:#f0a020; --acc:#ffffff; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; background:var(--bg); color:var(--txt); font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:520px; margin:0 auto; padding:16px 16px calc(24px + env(safe-area-inset-bottom)); }
+  h1 { font-size:20px; margin:8px 0 16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:12px; }
+  input, select { width:100%; padding:14px; border-radius:12px; border:1px solid var(--line); background:#111116; color:var(--txt); font-size:16px; margin-bottom:10px; }
+  button { font:inherit; border:0; border-radius:12px; padding:14px 16px; cursor:pointer; background:#2a2a33; color:var(--txt); }
+  button.primary { background:var(--acc); color:#000; font-weight:600; width:100%; }
+  button:disabled { opacity:.4; }
+  .muted { color:var(--mut); font-size:14px; }
+  .hidden { display:none !important; }
+  .top { display:flex; gap:8px; align-items:center; }
+  .top select { margin:0; flex:1; }
+  .stats { display:flex; align-items:baseline; gap:8px; margin-top:12px; }
+  .stats b { font-size:40px; font-variant-numeric:tabular-nums; }
+  .bar { height:8px; background:#111116; border-radius:8px; overflow:hidden; margin-top:8px; }
+  .bar i { display:block; height:100%; background:var(--ok); width:0; transition:width .3s; }
+  #camWrap { position:relative; border-radius:16px; overflow:hidden; background:#000; aspect-ratio:1/1; }
+  #cam { width:100%; height:100%; object-fit:cover; display:block; }
+  #camWrap .frame { position:absolute; inset:18%; border:3px solid rgba(255,255,255,.8); border-radius:20px; pointer-events:none; }
+  #camMsg { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; color:var(--mut); }
+  .manual { display:flex; gap:8px; margin-top:10px; }
+  .manual input { margin:0; }
+  #result { border-width:3px; }
+  #result.ok { border-color:var(--ok); } #result.bad { border-color:var(--bad); } #result.warn { border-color:var(--warn); }
+  #resTitle { font-size:22px; font-weight:700; margin:0 0 4px; }
+  #resBig { font-size:44px; font-weight:800; margin:8px 0; font-variant-numeric:tabular-nums; }
+  .nums { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0 10px; }
+  .nums button { font-size:28px; font-weight:700; padding:20px 0; background:var(--ok); color:#000; }
+  .nums button.all { grid-column:1/-1; font-size:20px; }
+  #flash { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:var(--ok); color:#000; z-index:10; text-align:center; padding:24px; }
+  #flash.bad { background:var(--bad); color:#fff; }
+  #flash .big { font-size:64px; font-weight:800; line-height:1; }
+  #flash .sub { font-size:22px; font-weight:600; }
+  #flash button { background:rgba(0,0,0,.2); color:inherit; font-weight:600; }
+  ul { list-style:none; padding:0; margin:0; }
+  li { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line); }
+  li:first-child { border-top:0; }
+  li .who { flex:1; }
+  li.undone .who { text-decoration:line-through; color:var(--mut); }
+  li button { padding:8px 12px; font-size:14px; }
+</style>
+</head>
+<body>
+<main>
+  <!-- LOGIN -->
+  <section id="login" class="hidden">
+    <h1>Recepción</h1>
+    <div class="card">
+      <form id="loginForm">
+        <input id="email" type="email" placeholder="Email" autocomplete="username" required>
+        <input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password" required>
+        <button class="primary" type="submit">Entrar</button>
+        <p id="loginErr" class="muted"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section id="app" class="hidden">
+    <div class="card">
+      <div class="top">
+        <select id="eventSel"></select>
+        <button id="logout" title="Salir">Salir</button>
+      </div>
+      <div class="stats"><b id="inside">0</b><span class="muted">/ <span id="sold">0</span> dentro · aforo <span id="cap">0</span></span></div>
+      <div class="bar"><i id="barFill"></i></div>
+    </div>
+
+    <div id="scanCard" class="card">
+      <div id="camWrap">
+        <video id="cam" playsinline muted></video>
+        <div class="frame"></div>
+        <div id="camMsg">Toca para activar la cámara</div>
+      </div>
+      <canvas id="cv" class="hidden"></canvas>
+      <div class="manual">
+        <input id="manualCode" placeholder="O escribe el código" autocapitalize="off" autocomplete="off">
+        <button id="manualBtn">Buscar</button>
+      </div>
+    </div>
+
+    <div id="result" class="card hidden">
+      <p id="resTitle"></p>
+      <p id="resSub" class="muted"></p>
+      <div id="resBig"></div>
+      <div id="nums" class="nums"></div>
+      <button id="resClose" style="width:100%">Escanear otra</button>
+    </div>
+
+    <div class="card">
+      <p class="muted" style="margin-top:0">Últimas entradas validadas</p>
+      <ul id="recent"></ul>
+    </div>
+  </section>
+</main>
+
+<div id="flash" class="hidden">
+  <div class="big" id="flashBig"></div>
+  <div class="sub" id="flashSub"></div>
+  <button id="flashUndo">Deshacer</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL = "https://rapzlqgpnxxuvuqlqgij.supabase.co";
+const SUPABASE_KEY = "sb_publishable_sKXTFmt9EIo0f8VXMrtKUw_9dhNGPfE";
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const $ = (id) => document.getElementById(id);
+const ERR = {
+  no_existe: "Este QR no es una entrada válida",
+  sin_entradas_suficientes: "No quedan tantas entradas en este QR",
+  anulada: "Entrada anulada o reembolsada",
+  no_autorizado: "Tu usuario no está autorizado en recepción",
+};
+const msg = (e) => { const m = e?.message || String(e); for (const k in ERR) if (m.includes(k)) return ERR[k]; return m; };
+
+let eventId = null, current = null, scanning = false, stream = null, lastCode = null, lastAt = 0;
+
+// ---------- Sesión ----------
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { show("login"); return; }
+  const { data: ok, error } = await sb.rpc("is_staff");
+  if (error || !ok) { await sb.auth.signOut(); show("login"); $("loginErr").textContent = ERR.no_autorizado; return; }
+  show("app");
+  await loadEvents();
+}
+function show(which) { $("login").classList.toggle("hidden", which !== "login"); $("app").classList.toggle("hidden", which !== "app"); }
+
+$("loginForm").onsubmit = async (e) => {
+  e.preventDefault(); $("loginErr").textContent = "";
+  const { error } = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("pass").value });
+  if (error) { $("loginErr").textContent = "Email o contraseña incorrectos"; return; }
+  boot();
+};
+$("logout").onclick = async () => { stopCam(); await sb.auth.signOut(); show("login"); };
+
+// ---------- Noches ----------
+async function loadEvents() {
+  const { data, error } = await sb.rpc("staff_events");
+  if (error) return alert(msg(error));
+  const sel = $("eventSel"); sel.innerHTML = "";
+  if (!data.length) { sel.innerHTML = "<option>No hay noches creadas</option>"; return; }
+  const now = Date.now();
+  // Por defecto, la noche más cercana a ahora
+  let best = data[0];
+  for (const ev of data) if (Math.abs(new Date(ev.starts_at) - now) < Math.abs(new Date(best.starts_at) - now)) best = ev;
+  for (const ev of data) {
+    const o = document.createElement("option");
+    o.value = ev.id;
+    o.textContent = `${ev.name} · ${new Date(ev.starts_at).toLocaleDateString("es-ES", { weekday:"short", day:"numeric", month:"short" })}`;
+    sel.appendChild(o);
+  }
+  const saved = sessionStorage.getItem("ev");
+  sel.value = data.some(d => d.id === saved) ? saved : best.id;
+  eventId = sel.value;
+  refresh();
+}
+$("eventSel").onchange = (e) => { eventId = e.target.value; try { sessionStorage.setItem("ev", eventId); } catch {} refresh(); };
+
+async function refresh() {
+  if (!eventId) return;
+  const [{ data: st }, { data: rc }] = await Promise.all([
+    sb.rpc("event_stats", { p_event_id: eventId }),
+    sb.rpc("recent_checkins", { p_event_id: eventId }),
+  ]);
+  if (st) {
+    $("inside").textContent = st.inside; $("sold").textContent = st.sold; $("cap").textContent = st.capacity;
+    $("barFill").style.width = (st.sold ? Math.min(100, st.inside / st.sold * 100) : 0) + "%";
+  }
+  const ul = $("recent"); ul.innerHTML = "";
+  for (const c of rc || []) {
+    const li = document.createElement("li");
+    if (c.undone_at) li.className = "undone";
+    const t = new Date(c.created_at).toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit" });
+    li.innerHTML = `<span class="who"><b>+${c.count}</b> ${esc(c.buyer_name || "Sin nombre")} <span class="muted">· ${c.used}/${c.quantity} · ${t}</span></span>`;
+    if (!c.undone_at) {
+      const b = document.createElement("button"); b.textContent = "Deshacer";
+      b.onclick = () => undo(c.id); li.appendChild(b);
+    }
+    ul.appendChild(li);
+  }
+}
+setInterval(() => { if (!document.hidden && eventId) refresh(); }, 15000);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+
+// ---------- Cámara ----------
+$("camWrap").onclick = () => { if (!stream) startCam(); };
+async function startCam() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+    $("cam").srcObject = stream; await $("cam").play();
+    $("camMsg").classList.add("hidden"); scanning = true; requestAnimationFrame(tick);
+  } catch (e) {
+    $("camMsg").textContent = "No se pudo abrir la cámara. Revisa los permisos o escribe el código abajo.";
+    stream = null;
+  }
+}
+function stopCam() { scanning = false; stream?.getTracks().forEach(t => t.stop()); stream = null; $("camMsg").classList.remove("hidden"); $("camMsg").textContent = "Toca para activar la cámara"; }
+function tick() {
+  if (!scanning) return;
+  const v = $("cam"), cv = $("cv");
+  if (v.readyState === v.HAVE_ENOUGH_DATA) {
+    const w = 480, h = Math.round(v.videoHeight * (w / v.videoWidth));
+    cv.width = w; cv.height = h;
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(v, 0, 0, w, h);
+    const img = ctx.getImageData(0, 0, w, h);
+    const qr = window.jsQR(img.data, w, h, { inversionAttempts: "dontInvert" });
+    if (qr?.data) {
+      const code = extractCode(qr.data);
+      // evita leer el mismo QR varias veces seguidas
+      if (code && !(code === lastCode && Date.now() - lastAt < 3000)) { lastCode = code; lastAt = Date.now(); lookup(code); return; }
+    }
+  }
+  requestAnimationFrame(tick);
+}
+function extractCode(s) {
+  s = s.trim();
+  try { const u = new URL(s); return u.searchParams.get("code") || s; } catch { return s; }
+}
+$("manualBtn").onclick = () => { const c = $("manualCode").value.trim(); if (c) lookup(extractCode(c)); };
+$("manualCode").onkeydown = (e) => { if (e.key === "Enter") $("manualBtn").click(); };
+
+// ---------- Validación ----------
+async function lookup(code) {
+  scanning = false;
+  if (navigator.vibrate) navigator.vibrate(60);
+  const { data, error } = await sb.rpc("lookup_ticket", { p_code: code });
+  $("scanCard").classList.add("hidden");
+  const r = $("result"); r.classList.remove("hidden", "ok", "bad", "warn");
+  $("nums").innerHTML = "";
+  if (error) {
+    r.classList.add("bad"); $("resTitle").textContent = "✕ " + msg(error); $("resSub").textContent = ""; $("resBig").textContent = "";
+    return;
+  }
+  current = { ...data, code };
+  const otherNight = data.event_id !== eventId;
+  $("resTitle").textContent = data.buyer_name || "Reserva";
+  $("resSub").textContent = `${data.quantity} ${data.quantity === 1 ? "entrada" : "entradas"} · ${data.event_name}`;
+  if (data.status !== "paid") { r.classList.add("bad"); $("resBig").textContent = "Anulada"; return; }
+  if (data.remaining === 0) { r.classList.add("bad"); $("resBig").textContent = "Ya han entrado todos"; return; }
+  r.classList.add(otherNight ? "warn" : "ok");
+  $("resBig").textContent = `Quedan ${data.remaining}`;
+  if (otherNight) $("resSub").textContent += " · ⚠️ ES DE OTRA NOCHE";
+  // Botones 1..quedan, y "todos" si quedan más de 1
+  for (let i = 1; i <= data.remaining; i++) {
+    const b = document.createElement("button"); b.textContent = i; b.onclick = () => doCheckin(i); $("nums").appendChild(b);
+  }
+  if (data.remaining > 1) {
+    const b = document.createElement("button"); b.className = "all"; b.textContent = `Entran todos (${data.remaining})`;
+    b.onclick = () => doCheckin(data.remaining); $("nums").appendChild(b);
+  }
+}
+
+let lastCheckinId = null, flashTimer = null;
+async function doCheckin(n) {
+  $("nums").querySelectorAll("button").forEach(b => b.disabled = true);
+  const { data, error } = await sb.rpc("check_in", { p_code: current.code, p_count: n });
+  if (error) { flash(false, "✕", msg(error)); return; }
+  lastCheckinId = data.checkin_id;
+  flash(true, `+${n}`, data.remaining ? `Quedan ${data.remaining} en este QR` : "QR completo");
+  refresh();
+}
+function flash(ok, big, sub) {
+  if (navigator.vibrate) navigator.vibrate(ok ? [80] : [200, 80, 200]);
+  const f = $("flash"); f.classList.toggle("bad", !ok); f.classList.remove("hidden");
+  $("flashBig").textContent = big; $("flashSub").textContent = sub;
+  $("flashUndo").classList.toggle("hidden", !ok);
+  clearTimeout(flashTimer); flashTimer = setTimeout(closeFlash, ok ? 2500 : 3000);
+}
+function closeFlash() { $("flash").classList.add("hidden"); backToScan(); }
+$("flash").onclick = (e) => { if (e.target.id !== "flashUndo") { clearTimeout(flashTimer); closeFlash(); } };
+$("flashUndo").onclick = async (e) => { e.stopPropagation(); clearTimeout(flashTimer); if (lastCheckinId) await undo(lastCheckinId); closeFlash(); };
+
+async function undo(id) {
+  const { error } = await sb.rpc("undo_checkin", { p_checkin_id: id });
+  if (error) alert(msg(error));
+  refresh();
+}
+$("resClose").onclick = backToScan;
+function backToScan() {
+  $("result").classList.add("hidden"); $("scanCard").classList.remove("hidden");
+  $("manualCode").value = ""; current = null;
+  if (stream) { scanning = true; requestAnimationFrame(tick); }
+}
+
+boot();
+</script>
+</body>
+</html>
