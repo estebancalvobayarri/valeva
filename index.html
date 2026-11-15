@@ -172,6 +172,8 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:var(--i
 .demo{font-size:13px;background:var(--soft);color:var(--muted);border-radius:10px;padding:10px 14px;margin:0}
 .ticket{border:1.5px dashed #c9ccd3;border-radius:20px;padding:24px;display:grid;gap:10px;text-align:center}
 .ticket .code{font-size:32px;font-weight:800;letter-spacing:.12em}
+.ticket .qr{display:block;width:220px;height:220px;margin:4px auto 0;border-radius:12px;background:#fff}
+.ticket .code-txt{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--muted);word-break:break-all}
 .ticket .bub{justify-self:center}
 
 /* FAQ */
@@ -381,7 +383,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     <div class="panel hidden" id="step-pay" aria-live="polite">
       <h3>Confirma tu reserva</h3>
       <div class="summary" id="summary"></div>
-      <p class="demo">Versión de prueba: aquí irá el pago con tarjeta. Este botón no cobra nada.</p>
+      <p class="demo">Pagarás con tarjeta, Apple Pay o Google Pay en la pasarela segura de Stripe. Después volverás aquí con tu entrada.</p>
+      <p class="err" id="pay-err" role="alert"></p>
       <div class="cta-row">
         <button class="btn" id="pay">Pagar</button>
         <button class="btn sec" id="back">Volver</button>
@@ -439,7 +442,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <footer id="privacidad">
     <a class="logo" href="#" style="font-size:22px"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span>vale<b>va</b></span></a><div>Sin rollos. Sin presión. Dos sábados al mes, en Valencia, desde las 21:30.</div>
     <div>Los datos de tu reserva solo se usan para gestionar tu entrada y enviarte la ubicación del bar. Las estadísticas que se muestran son siempre anónimas y agregadas.</div>
-    <div>Prototipo · fechas y datos de ejemplo</div>
+    <div>Pagos seguros con Stripe</div>
   </footer>
 </div>
 
@@ -447,24 +450,39 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
 (function(){
   var FRANJAS=["25–30","31–35","36–40","41–45","46+"];
   var MAX_GRUPO=6, PRECIO=6;
-  var EVENTOS=[
-    {id:"2026-11-21",corto:"Sáb 21 nov",largo:"Sábado 21 de noviembre",aforo:60,data:{"25–30":[5,4],"31–35":[7,6],"36–40":[4,6],"41–45":[2,3],"46+":[1,2]}},
-    {id:"2026-12-05",corto:"Sáb 5 dic",largo:"Sábado 5 de diciembre",aforo:60,data:{"25–30":[3,2],"31–35":[4,5],"36–40":[2,3],"41–45":[1,1],"46+":[0,1]}},
-    {id:"2026-12-19",corto:"Sáb 19 dic",largo:"Sábado 19 de diciembre",aforo:70,data:{"25–30":[1,2],"31–35":[2,1],"36–40":[1,1],"41–45":[0,1],"46+":[0,0]}},
-    {id:"2027-01-09",corto:"Sáb 9 ene",largo:"Sábado 9 de enero",aforo:60,data:{"25–30":[0,1],"31–35":[1,0],"36–40":[0,0],"41–45":[0,0],"46+":[0,0]}}
-  ];
-  var actual=EVENTOS[0];
+  // Backend (Supabase). La clave publicable es pública por diseño: solo permite lo que dejan las reglas de la base de datos.
+  var API="https://rapzlqgpnxxuvuqlqgij.supabase.co";
+  var API_KEY="sb_publishable_sKXTFmt9EIo0f8VXMrtKUw_9dhNGPfE";
+  var EVENTOS=[];
+  var actual=null;
   function $(id){return document.getElementById(id);}
   function totales(ev){var f=0,m=0;FRANJAS.forEach(function(k){f+=ev.data[k][0];m+=ev.data[k][1];});return {f:f,m:m,t:f+m};}
+  function libresDe(ev){return Math.max(0,Math.min(ev.libres,ev.aforo-totales(ev).t));}
 
   var lista=$("fechas-list"), rf=$("r-fecha");
-  EVENTOS.forEach(function(ev){
-    var b=document.createElement("button");b.type="button";b.className="fecha-btn";b.dataset.id=ev.id;
-    lista.appendChild(b);
-    var o=document.createElement("option");o.value=ev.id;o.textContent=ev.largo;rf.appendChild(o);
-  });
   lista.addEventListener("click",function(e){var b=e.target.closest(".fecha-btn");if(b)elegir(b.dataset.id);});
   rf.addEventListener("change",function(){elegir(rf.value,true);});
+
+  // Noches reales y estadísticas anónimas desde la base de datos
+  function cargarEventos(){
+    return fetch(API+"/rest/v1/rpc/public_events",{method:"POST",headers:{apikey:API_KEY,"Content-Type":"application/json"},body:"{}"})
+      .then(function(r){if(!r.ok)throw new Error("http "+r.status);return r.json();})
+      .then(function(rows){
+        EVENTOS=rows.map(function(e){
+          var d=new Date(e.starts_at),data={};
+          FRANJAS.forEach(function(k){data[k]=(e.stats&&e.stats[k])?e.stats[k]:[0,0];});
+          return {id:e.slug,uuid:e.id,largo:e.name,aforo:e.capacity,libres:e.libres,max:e.max_per_order,precio:e.price_cents/100,
+            corto:d.toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short",timeZone:"Europe/Madrid"}).replace(/^./,function(c){return c.toUpperCase();}).replace(",",""),
+            data:data};
+        });
+        lista.innerHTML="";rf.innerHTML="";
+        EVENTOS.forEach(function(ev){
+          var b=document.createElement("button");b.type="button";b.className="fecha-btn";b.dataset.id=ev.id;
+          lista.appendChild(b);
+          var o=document.createElement("option");o.value=ev.id;o.textContent=ev.largo;rf.appendChild(o);
+        });
+      });
+  }
 
   function elegir(id,desdeForm){
     actual=EVENTOS.filter(function(e){return e.id===id;})[0];
@@ -473,12 +491,13 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   }
 
   function render(){
+    if(!actual) return;
     lista.querySelectorAll(".fecha-btn").forEach(function(b){
       var ev=EVENTOS.filter(function(e){return e.id===b.dataset.id;})[0],t=totales(ev);
       b.setAttribute("aria-pressed",ev===actual?"true":"false");
-      b.innerHTML="<b>"+ev.corto+"</b><span>"+t.t+" apuntados · "+Math.max(0,ev.aforo-t.t)+" libres</span>";
+      b.innerHTML="<b>"+ev.corto+"</b><span>"+t.t+" apuntados · "+libresDe(ev)+" libres</span>";
     });
-    var t=totales(actual),libres=Math.max(0,actual.aforo-t.t),max=1;
+    var t=totales(actual),libres=libresDe(actual),max=1;
     FRANJAS.forEach(function(k){max=Math.max(max,actual.data[k][0]+actual.data[k][1]);});
     $("ev-fecha").textContent=actual.largo;
     $("ev-aforo").textContent=actual.aforo;
@@ -537,15 +556,16 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     }
     var email=$("email").value.trim(),tel=$("tel").value.replace(/\s/g,"");
     var aviso=document.querySelector('input[name="aviso"]:checked').value;
-    var t=totales(actual);
-    if(!msg && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) msg="Revisa el email: parece incompleto.";
+    if(!msg && !actual) msg="No hay sábados disponibles ahora mismo. Vuelve a intentarlo en un rato.";
+    else if(!msg && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) msg="Revisa el email: parece incompleto.";
     else if(!msg && aviso==="whatsapp" && !/^\+?\d{9,12}$/.test(tel)) msg="Para recibir el bar por WhatsApp, escribe tu móvil.";
-    else if(!msg && t.t+n>actual.aforo) msg="No quedan plazas suficientes ese sábado. Prueba otra fecha.";
+    else if(!msg && n>libresDe(actual)) msg="No quedan plazas suficientes ese sábado. Prueba otra fecha.";
     else if(!msg && !$("c-soltero").checked) msg="Marca la declaración para poder reservar.";
     else if(!msg && !$("c-rgpd").checked) msg="Necesitamos tu consentimiento para tratar los datos de la reserva.";
     err.textContent=msg;
     if(msg) return;
-    pending={personas:personas,aviso:aviso,ev:actual};
+    pending={personas:personas,aviso:aviso,ev:actual,email:email,tel:tel};
+    $("pay-err").textContent="";$("pay").disabled=false;
     var h='<div><span>Sábado</span><span>'+actual.largo+'</span></div><div><span>Lugar</span><span>Se desvela a las 18:30</span></div>';
     personas.forEach(function(p){h+='<div><span>'+p.nombre+'</span><span>'+PRECIO+',00 €</span></div>';});
     h+='<div class="tot"><span>Total</span><span>'+(n*PRECIO)+',00 €</span></div>';
@@ -554,19 +574,66 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     show("step-pay");
   });
   $("back").addEventListener("click",function(){show("step-form");});
+  // Pagar: crea la reserva y lleva al cliente a la pasarela de Stripe
+  var ERRORES={agotado:"Se acaban de agotar las plazas de ese sábado. Prueba otra fecha.",evento_no_disponible:"Ese sábado ya no está disponible.",
+    email_invalido:"Revisa el email: parece incompleto.",cantidad_invalida:"Máximo 6 personas por reserva.",datos_personas_invalidos:"Revisa el nombre, el sexo y la edad de cada persona."};
   $("pay").addEventListener("click",function(){
     if(!pending) return;
-    pending.personas.forEach(function(p){pending.ev.data[p.edad][p.sexo==="f"?0:1]++;});
-    render();
-    $("code").textContent="VA-"+Math.random().toString(36).slice(2,6).toUpperCase();
-    $("t-nombres").textContent=pending.personas.map(function(p){return p.nombre;}).join(", ");
-    $("t-fecha").innerHTML=pending.ev.largo+" · desde las 21:30<br>"+(pending.personas.length>1?pending.personas.length+" entradas":"1 entrada");
-    $("t-aviso").textContent="A las 18:30 de ese sábado te enviaremos la dirección del bar por "+(pending.aviso==="whatsapp"?"WhatsApp":"email")+". Enseña este código en la puerta.";
-    show("step-ok");pending=null;
+    var btn=$("pay"),base=location.origin+location.pathname;
+    btn.disabled=true;btn.textContent="Abriendo el pago…";$("pay-err").textContent="";
+    fetch(API+"/functions/v1/create-checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      event_id:pending.ev.uuid,personas:pending.personas,email:pending.email,tel:pending.tel,aviso:pending.aviso,
+      success_url:base+"?pago=ok&session_id={CHECKOUT_SESSION_ID}#reserva",cancel_url:base+"#reserva"})})
+    .then(function(r){return r.json().catch(function(){return {};});})
+    .then(function(d){
+      if(d.url){location.href=d.url;return;}
+      throw new Error(ERRORES[d.error]||"No hemos podido abrir el pago. Inténtalo de nuevo en un momento.");
+    })
+    .catch(function(e){
+      $("pay-err").textContent=e.message&&!/fetch/i.test(e.message)?e.message:"No hemos podido abrir el pago. Revisa tu conexión e inténtalo de nuevo.";
+      btn.disabled=false;btn.textContent="Pagar "+(pending.personas.length*PRECIO)+" €";
+    });
   });
   $("again").addEventListener("click",function(){form.reset();n=1;pintarAcomp();err.textContent="";show("step-form");});
 
-  elegir(actual.id);pintarAcomp();
+  // Vuelta desde Stripe: esperar a que se confirme el pago y mostrar la entrada con su QR
+  function vueltaDelPago(){
+    var q=new URLSearchParams(location.search),sid=q.get("session_id");
+    if(q.get("pago")!=="ok"||!sid) return false;
+    history.replaceState(null,"",location.pathname+"#reserva");
+    show("step-ok");
+    $("t-nombres").textContent="Confirmando tu pago…";$("t-fecha").textContent="";$("code").textContent="";$("t-aviso").textContent="";
+    var intentos=0;
+    (function mirar(){
+      fetch(API+"/functions/v1/ticket?format=json&session_id="+encodeURIComponent(sid),{cache:"no-store"})
+      .then(function(r){return r.json();})
+      .then(function(t){
+        if(t.pending||!t.code){
+          if(++intentos<20) return setTimeout(mirar,2000);
+          $("t-nombres").textContent="Pago recibido";
+          $("t-aviso").textContent="Estamos terminando de confirmar tu reserva. Te llegará la entrada por email en unos minutos.";
+          return;
+        }
+        var nombres=(t.nombres&&t.nombres.length)?t.nombres.join(", "):(t.buyer_name||"");
+        $("t-nombres").textContent=nombres;
+        $("t-fecha").innerHTML=(t.event?t.event.name:"")+" · desde las 21:30<br>"+(t.quantity>1?t.quantity+" entradas":"1 entrada");
+        $("code").innerHTML='<img class="qr" alt="Código QR de tu entrada" src="'+t.qr_url+'"><div class="code-txt">'+t.code+'</div>';
+        $("t-aviso").textContent="A las 18:30 de ese sábado te enviaremos la dirección del bar por "+(t.aviso==="whatsapp"?"WhatsApp":"email")+". Enseña este QR en la puerta"+(t.quantity>1?": vale para las "+t.quantity+" personas, aunque lleguéis por separado.":".");
+      })
+      .catch(function(){if(++intentos<20) setTimeout(mirar,2000);});
+    })();
+    return true;
+  }
+
+  pintarAcomp();
+  var volviendo=vueltaDelPago();
+  cargarEventos().then(function(){
+    if(EVENTOS.length){elegir(EVENTOS[0].id);}
+    else{err.textContent="Ahora mismo no hay sábados abiertos. Vuelve pronto.";$("submit").disabled=true;}
+    if(volviendo) location.hash="#reserva";
+  }).catch(function(){
+    err.textContent="No hemos podido cargar las fechas. Recarga la página en un momento.";$("submit").disabled=true;
+  });
 })();
 
 (function(){
