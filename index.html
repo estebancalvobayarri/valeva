@@ -164,15 +164,24 @@ section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
 
 footer .legal a{color:var(--muted)}
 
-/* Aviso de nuevas fechas */
-.avisos{background:var(--accent-soft);border-radius:22px;padding:24px;display:grid;gap:16px}
+/* Aviso de nuevas fechas (fondo negro) */
+.avisos{background:var(--ink);color:#fff;border-radius:22px;padding:28px 24px;display:grid;gap:16px}
+.avisos h2{color:#fff}
 .avisos p{margin:0}
 .avisos form{gap:12px}
 .avisos .linea{display:flex;gap:10px;flex-wrap:wrap}
-.avisos .linea input{flex:1 1 220px;border-color:#d6e0f7}
-.avisos .linea .btn{flex:none}
+.avisos .linea input[type=email]{flex:1 1 220px;background:#fff;border-color:#fff;color:var(--ink)}
+.avisos .linea input[type=email]:focus{border-color:var(--accent)}
+.avisos .linea .btn{flex:none;background:var(--accent);color:#fff}
+.avisos .linea .btn:hover{background:#1d47b0}
+.avisos .check{color:#b7bcc6;font-size:13px}
+.avisos .check a{color:#fff}
+.avisos .check input{accent-color:var(--accent)}
+.avisos .err{color:#ff8a80}
 .avisos .ok{display:grid;gap:10px}
 .avisos .ok .bub{justify-self:start}
+.avisos .ok p{color:#dfe3ea}
+.avisos :focus-visible{outline-color:#8fb0ff}
 
 h1.azul,h2.azul{color:var(--accent)}
 .btn.pago{background:var(--accent)}
