@@ -11,6 +11,7 @@ Sin actividades, sin presentaciones, sin presión. Vas con tus amigos, te sienta
 | `index.html` | La web completa en un solo archivo (HTML, CSS y JavaScript sin dependencias) |
 | `img/` | Fotografías de la web |
 | `assets/valeva-simbolo.svg` | Símbolo de la marca (también se usa como favicon) |
+| `aviso-legal.html`, `privacidad.html`, `condiciones.html`, `cookies.html` | Textos legales. Los datos marcados en amarillo (titular, NIF, domicilio…) están pendientes de completar |
 
 ## Estado
 
