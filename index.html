@@ -579,7 +579,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     nw.classList.add("on");nw.removeAttribute("aria-hidden");
     setTimeout(function(){if(old.classList.contains("out")){old.classList.add("notrans");old.classList.remove("out");void old.offsetWidth;old.classList.remove("notrans");}},650);
     dots.forEach(function(d,k){d.setAttribute("aria-pressed",k===i?"true":"false");});}
-  function start(){if(reduce)return;stop();timer=setInterval(function(){go(i+1);},5000);}
+  function start(){if(reduce)return;stop();timer=setInterval(function(){go(i+1);},3000);}
   function stop(){if(timer){clearInterval(timer);timer=null;}}
   dots.forEach(function(d,k){d.addEventListener("click",function(){go(k);start();});});
   var c=document.querySelector(".carrusel");
