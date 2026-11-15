@@ -159,6 +159,8 @@ section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
 .mesa figcaption{position:absolute;left:14px;bottom:14px;background:#fff;color:var(--ink);font-size:14px;font-weight:700;padding:8px 14px;border-radius:999px}
 @media (max-width:520px){.escena-foto{aspect-ratio:4/5}.escena .carrusel{margin-top:-170px;width:94%}.mesa img{aspect-ratio:16/10}}
 
+footer .legal a{color:var(--muted)}
+
 /* Formulario */
 .panel{border:1px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:18px;background:#fff}
 form{display:grid;gap:16px}
@@ -393,7 +395,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
         <div id="acomps" style="display:grid;gap:12px"></div>
 
         <label class="check"><input type="checkbox" id="c-soltero"><span id="c-soltero-t">Soy soltero/a, cristiano/a y abierto/a a encontrar a alguien con quien construir un proyecto de vida.</span></label>
-        <label class="check"><input type="checkbox" id="c-rgpd"><span>Doy mi consentimiento explícito para que Valeva trate estos datos, incluida la fe, solo para gestionar la reserva, enviar la ubicación del bar y mostrar estadísticas anónimas. <a href="#privacidad">Política de privacidad</a>.</span></label>
+        <label class="check"><input type="checkbox" id="c-rgpd"><span>Doy mi consentimiento explícito para que Valeva trate estos datos, incluido el que revela mi fe, solo para gestionar la reserva, enviar la ubicación del bar y mostrar estadísticas anónimas. Si reservo para otras personas, les he informado y están de acuerdo. <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.</span></label>
+        <label class="check"><input type="checkbox" id="c-cond"><span>Soy mayor de 18 años y acepto las <a href="condiciones.html" target="_blank" rel="noopener">condiciones de contratación</a>. Sé que puedo cancelar hasta el viernes anterior a las 20:00 y que, por ser un evento con fecha, no hay derecho de desistimiento de 14 días.</span></label>
         <p class="err" id="err" role="alert"></p>
         <button class="btn" type="submit" id="submit">Continuar al pago · 6 €</button>
       </form>
@@ -462,6 +465,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     <a class="logo" href="#" style="font-size:22px"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span>vale<b>va</b></span></a><div>Sin rollos. Sin presión. Dos sábados al mes, en Valencia, desde las 21:30.</div>
     <div>Los datos de tu reserva solo se usan para gestionar tu entrada y enviarte la ubicación del bar. Las estadísticas que se muestran son siempre anónimas y agregadas.</div>
     <div>Pagos seguros con Stripe</div>
+    <nav class="legal" aria-label="Textos legales"><a href="aviso-legal.html">Aviso legal</a> · <a href="privacidad.html">Privacidad</a> · <a href="condiciones.html">Condiciones de contratación</a> · <a href="cookies.html">Cookies</a></nav>
   </footer>
 </div>
 
@@ -581,6 +585,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     else if(!msg && n>libresDe(actual)) msg="No quedan plazas suficientes ese sábado. Prueba otra fecha.";
     else if(!msg && !$("c-soltero").checked) msg="Marca la declaración para poder reservar.";
     else if(!msg && !$("c-rgpd").checked) msg="Necesitamos tu consentimiento para tratar los datos de la reserva.";
+    else if(!msg && !$("c-cond").checked) msg="Confirma que eres mayor de edad y aceptas las condiciones.";
     err.textContent=msg;
     if(msg) return;
     pending={personas:personas,aviso:aviso,ev:actual,email:email,tel:tel};
