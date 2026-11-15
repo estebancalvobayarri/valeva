@@ -163,7 +163,7 @@ async function loadEvents() {
   for (const ev of data) {
     const o = document.createElement("option");
     o.value = ev.id;
-    o.textContent = `${ev.name} · ${new Date(ev.starts_at).toLocaleDateString("es-ES", { weekday:"short", day:"numeric", month:"short" })}`;
+    o.textContent = ev.name + (ev.active === false ? " (oculta)" : "");
     sel.appendChild(o);
   }
   const saved = sessionStorage.getItem("ev");
