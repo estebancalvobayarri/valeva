@@ -294,7 +294,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
           <p class="note">Solo mostramos totales. Nadie ve nombres ni perfiles.</p>
         </div>
         <div class="price">
-          <div class="amt">5 €<small>Por persona · incluye la primera consumición</small><small style="margin-top:4px">Se paga al reservar: así el bar puede cerrar solo para nosotros.</small></div>
+          <div class="amt">6 €<small>Por persona · incluye la primera consumición</small><small style="margin-top:4px">Se paga al reservar: así el bar puede cerrar solo para nosotros.</small></div>
           <a class="btn" href="#reserva">Reservar este sábado</a>
         </div>
       </div>
@@ -308,7 +308,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     </div>
     <ol class="pasos">
       <li><b>Elige un sábado</b><span>Hay dos al mes. Para cada uno ves cuánta gente va y de qué edades.</span></li>
-      <li><b>Reserva para ti o para tu grupo</b><span>5 € por persona, con la primera consumición incluida.</span></li>
+      <li><b>Reserva para ti o para tu grupo</b><span>6 € por persona, con la primera consumición incluida.</span></li>
       <li><b>A las 18:30 te llega el bar</b><span>El mismo sábado, tres horas antes, recibes la dirección por email o WhatsApp.</span></li>
       <li><b>A tu aire</b><span>Sentaos en vuestra mesa como en cualquier bar. Hablar con gente nueva es opcional.</span></li>
     </ol>
@@ -374,7 +374,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
         <label class="check"><input type="checkbox" id="c-soltero"><span id="c-soltero-t">Soy soltero/a, cristiano/a y abierto/a a encontrar a alguien con quien construir un proyecto de vida.</span></label>
         <label class="check"><input type="checkbox" id="c-rgpd"><span>Doy mi consentimiento explícito para que Valeva trate estos datos, incluida la fe, solo para gestionar la reserva, enviar la ubicación del bar y mostrar estadísticas anónimas. <a href="#privacidad">Política de privacidad</a>.</span></label>
         <p class="err" id="err" role="alert"></p>
-        <button class="btn" type="submit" id="submit">Continuar al pago · 5 €</button>
+        <button class="btn" type="submit" id="submit">Continuar al pago · 6 €</button>
       </form>
     </div>
 
@@ -412,7 +412,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
       <details><summary>¿Por qué no sé el bar hasta el mismo día?</summary><p>Para que el local sea de verdad solo para quienes se han apuntado. A las 18:30 del sábado te enviamos la dirección por email o WhatsApp.</p></details>
       <details><summary>¿Puedo ir con amigos?</summary><p>Sí, es lo normal. Haz una sola reserva para todo el grupo, hasta 6 personas. Cada uno tiene que estar en ese mismo momento: soltero y con ganas de encontrar a alguien con quien construir un proyecto de vida.</p></details>
       <details><summary>¿Hay límite de edad?</summary><p>No. Como en cualquier bar, habrá mesas de gente más joven y más mayor. Antes de reservar puedes ver cuánta gente hay de cada franja.</p></details>
-      <details><summary>¿Qué incluyen los 5 €?</summary><p>La entrada y la primera consumición. Lo demás se paga en la barra, como siempre.</p></details>
+      <details><summary>¿Qué incluyen los 6 €?</summary><p>La entrada y la primera consumición. Lo demás se paga en la barra, como siempre.</p></details>
       <details><summary>¿Por qué se paga por adelantado?</summary><p>Porque así podemos reservar el bar solo para nosotros. Al pagar antes, el local sabe cuánta gente va a ir y tiene la primera consumición asegurada, así que le compensa cerrar sus puertas esa noche al resto del público.</p></details>
       <details><summary>¿Y si al final no puedo ir?</summary><p>Puedes cancelar hasta el viernes a las 20:00 y te devolvemos el dinero.</p></details>
     </div>
@@ -446,7 +446,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
 <script>
 (function(){
   var FRANJAS=["25–30","31–35","36–40","41–45","46+"];
-  var MAX_GRUPO=6, PRECIO=5;
+  var MAX_GRUPO=6, PRECIO=6;
   var EVENTOS=[
     {id:"2026-11-21",corto:"Sáb 21 nov",largo:"Sábado 21 de noviembre",aforo:60,data:{"25–30":[5,4],"31–35":[7,6],"36–40":[4,6],"41–45":[2,3],"46+":[1,2]}},
     {id:"2026-12-05",corto:"Sáb 5 dic",largo:"Sábado 5 de diciembre",aforo:60,data:{"25–30":[3,2],"31–35":[4,5],"36–40":[2,3],"41–45":[1,1],"46+":[0,1]}},
@@ -547,7 +547,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     if(msg) return;
     pending={personas:personas,aviso:aviso,ev:actual};
     var h='<div><span>Sábado</span><span>'+actual.largo+'</span></div><div><span>Lugar</span><span>Se desvela a las 18:30</span></div>';
-    personas.forEach(function(p){h+='<div><span>'+p.nombre+'</span><span>5,00 €</span></div>';});
+    personas.forEach(function(p){h+='<div><span>'+p.nombre+'</span><span>'+PRECIO+',00 €</span></div>';});
     h+='<div class="tot"><span>Total</span><span>'+(n*PRECIO)+',00 €</span></div>';
     $("summary").innerHTML=h;
     $("pay").textContent="Pagar "+(n*PRECIO)+" €";
