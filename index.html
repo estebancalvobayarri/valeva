@@ -168,6 +168,8 @@ h1.azul,h2.azul{color:var(--accent)}
 .btn.pago{background:var(--accent)}
 .btn.pago:hover{background:#1d47b0}
 
+#step-pay,#step-form,#step-ok{scroll-margin-top:150px}
+
 /* Formulario */
 .panel{border:1px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:18px;background:#fff}
 form{display:grid;gap:16px}
@@ -604,6 +606,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     $("summary").innerHTML=h;
     $("pay").textContent="Pagar "+(n*PRECIO)+" €";
     show("step-pay");
+    var sp=$("step-pay");sp.scrollIntoView({block:"start",behavior:(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)?"auto":"smooth"});
+    try{$("pay").focus({preventScroll:true});}catch(e){}
   });
   $("back").addEventListener("click",function(){show("step-form");});
   // Pagar: crea la reserva y lleva al cliente a la pasarela de Stripe
