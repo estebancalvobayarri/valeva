@@ -164,6 +164,10 @@ section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
 
 footer .legal a{color:var(--muted)}
 
+h1.azul,h2.azul{color:var(--accent)}
+.btn.pago{background:var(--accent)}
+.btn.pago:hover{background:#1d47b0}
+
 /* Formulario */
 .panel{border:1px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:18px;background:#fff}
 form{display:grid;gap:16px}
@@ -244,7 +248,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
 
   <div class="hero">
     <span class="mano">Sin rollos · Sin presión</span>
-    <h1>Un bar lleno de gente <em>en tu mismo momento</em>.</h1>
+    <h1>Un bar lleno de gente en tu mismo momento.</h1>
     <p class="lead">Dos sábados al mes reservamos un bar de Valencia solo para solteros cristianos en tu misma situación. Ven con tus amigos, sentaos en vuestra mesa y tomaos algo tranquilos. Si te apetece conocer a alguien, todos los que están allí comparten tu fe y tu momento. Y si no, habrás pasado una buena noche con los tuyos, ya habrá otras ocasiones.</p>
     <div class="cta-row">
       <a class="btn" href="#fechas">Ver próximas fechas</a>
@@ -284,7 +288,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <section id="como" aria-labelledby="t-como">
     <div style="display:grid;gap:6px">
       <span class="kicker">Cómo funciona</span>
-      <h2 id="t-como">Nada de citas a ciegas. <em>Solo un bar.</em></h2>
+      <h2 id="t-como" class="azul">Nada de citas a ciegas. Solo un bar.</h2>
     </div>
     <ol class="pasos">
       <li><b>Elige un sábado</b><span>Hay dos al mes. Para cada uno ves cuánta gente va y de qué edades.</span></li>
@@ -301,7 +305,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <section id="fechas" aria-labelledby="t-fechas">
     <div style="display:grid;gap:6px">
       <span class="kicker">Próximas fechas</span>
-      <h2 id="t-fechas">Elige tu <em>sábado</em></h2>
+      <h2 id="t-fechas">Elige tu sábado</h2>
     </div>
     <div class="fechas" id="fechas-list" role="group" aria-label="Fechas disponibles"></div>
 
@@ -354,7 +358,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <section id="reserva" aria-labelledby="t-reserva">
     <div style="display:grid;gap:6px">
       <span class="kicker">Reserva</span>
-      <h2 id="t-reserva">Guárdate <em>un sitio</em></h2>
+      <h2 id="t-reserva" class="azul">Guárdate un sitio</h2>
     </div>
 
     <div class="panel" id="step-form">
@@ -411,7 +415,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
       <p class="demo">Pagarás con tarjeta, Apple Pay o Google Pay en la pasarela segura de Stripe. Después volverás aquí con tu entrada.</p>
       <p class="err" id="pay-err" role="alert"></p>
       <div class="cta-row">
-        <button class="btn" id="pay">Pagar</button>
+        <button class="btn pago" id="pay">Pagar</button>
         <button class="btn sec" id="back">Volver</button>
       </div>
     </div>
@@ -432,7 +436,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <section id="preguntas" class="faq" aria-labelledby="t-faq">
     <div style="display:grid;gap:6px">
       <span class="kicker">Preguntas</span>
-      <h2 id="t-faq">Lo que <em>suele preguntarse</em></h2>
+      <h2 id="t-faq">Lo que suele preguntarse</h2>
     </div>
     <div>
       <details><summary>¿Tengo que hablar con gente que no conozco?</summary><p>No. Puedes ir con tus amigos, sentaros en vuestra mesa y no hablar con nadie más. La diferencia con otro bar es que, si un día te apetece, sabes que todos están en tu mismo momento y con la misma ilusión.</p></details>
@@ -449,7 +453,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
   <section id="bares" aria-labelledby="t-bares">
     <div class="bares">
       <span class="kicker">Para bares</span>
-      <h2 id="t-bares">¿Tienes un bar en Valencia?</h2>
+      <h2 id="t-bares" class="azul">¿Tienes un bar en Valencia?</h2>
       <p style="margin:0">Reserva tu local un sábado por la noche para Valeva y recibe un grupo de clientes con la primera consumición ya pagada.</p>
       <ul>
         <li>Entradas con la primera consumición incluida, pagadas antes del evento.</li>
