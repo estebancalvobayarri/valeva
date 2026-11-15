@@ -126,7 +126,7 @@ section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
 .price .amt small{display:block;font-size:14px;font-weight:500;letter-spacing:0;color:var(--muted);margin-top:6px}
 
 /* Cómo funciona */
-.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:0;margin:0;list-style:none;counter-reset:p}
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:0;margin:0;list-style:none;counter-reset:p}
 .pasos li{border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:6px;counter-increment:p;align-content:start}
 .pasos li::before{content:counter(p);font-size:14px;font-weight:800;color:#fff;background:var(--ink);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
 .pasos b{font-size:17px}
@@ -140,6 +140,23 @@ section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
 .fotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-bottom:12px}
 .fotos img{width:100%;height:100%;aspect-ratio:16/10;object-fit:cover;border-radius:16px;display:block}
 .fotos .f1{grid-column:1/-1;aspect-ratio:16/8}
+
+
+/* Fotos integradas */
+.escena{display:grid;margin-top:8px}
+.escena-foto{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:24px;display:block}
+.escena .carrusel{margin:-120px 0 0 auto;width:min(440px,92%);position:relative}
+.escena .chat{border:1px solid var(--line)}
+.event-head.foto{position:relative;overflow:hidden;color:#fff;border-bottom:0;padding:34px 24px 26px;min-height:150px;align-content:end}
+.event-head.foto .event-foto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.event-head.foto::after{content:"";position:absolute;inset:0;background:rgba(22,24,29,.62);z-index:1}
+.event-head.foto>*:not(.event-foto){position:relative;z-index:2}
+.event-head.foto h3,.event-head.foto .event-meta b{color:#fff}
+.event-head.foto .fecha,.event-head.foto .event-meta{color:#dfe3ea}
+.mesa{margin:6px 0 0;position:relative}
+.mesa img{width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:20px;display:block}
+.mesa figcaption{position:absolute;left:14px;bottom:14px;background:#fff;color:var(--ink);font-size:14px;font-weight:700;padding:8px 14px;border-radius:999px}
+@media (max-width:520px){.escena-foto{aspect-ratio:4/5}.escena .carrusel{margin-top:-170px;width:94%}.mesa img{aspect-ratio:16/10}}
 
 /* Formulario */
 .panel{border:1px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:18px;background:#fff}
@@ -226,31 +243,34 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     <div class="cta-row">
       <a class="btn" href="#fechas">Ver próximas fechas</a>
     </div>
+    <div class="escena">
+      <img class="escena-foto" src="img/grupo.jpg" alt="Un grupo de amigos charla en una mesa de un bar de Valencia por la noche">
     <div class="carrusel" aria-roledescription="carrusel" aria-label="Conversaciones de ejemplo">
-      <div class="slides">
-      <div class="chat slide on" role="group" aria-roledescription="conversación" aria-label="1 de 3: Lucía">
-        <span class="quien">Lucía</span>
-        <div class="bub in">¿Te vienes el sábado? Es un bar solo para solteros cristianos. Sin dinámicas ni presentaciones: vamos los de siempre y ya está.</div>
-        <div class="bub out">Vale, va.</div>
-        <span class="leido">Leído 21:14</span>
-      </div>
-      <div class="chat slide" role="group" aria-roledescription="conversación" aria-label="2 de 3: Pablo" aria-hidden="true">
-        <span class="quien">Pablo</span>
-        <div class="bub in">Este sábado hay Valeva. ¿Nos apuntamos los cuatro?</div>
-        <div class="bub out">Vale, va.</div>
-        <span class="leido">Leído 19:02</span>
-      </div>
-      <div class="chat slide" role="group" aria-roledescription="conversación" aria-label="3 de 3: María" aria-hidden="true">
-        <span class="quien">María</span>
-        <div class="bub in">En serio, que esto es diferente: no hay actividades forzadas ni nada de eso. Es todo muy normal.</div>
-        <div class="bub out">Vale, va.</div>
-        <span class="leido">Leído 20:37</span>
-      </div>
-      </div>
-      <div class="dots" role="group" aria-label="Elegir conversación">
-        <button type="button" class="dot" aria-label="Conversación con Lucía" aria-pressed="true"></button>
-        <button type="button" class="dot" aria-label="Conversación con Pablo" aria-pressed="false"></button>
-        <button type="button" class="dot" aria-label="Conversación con María" aria-pressed="false"></button>
+        <div class="slides">
+        <div class="chat slide on" role="group" aria-roledescription="conversación" aria-label="1 de 3: Lucía">
+          <span class="quien">Lucía</span>
+          <div class="bub in">¿Te vienes el sábado? Es un bar solo para solteros cristianos. Sin dinámicas ni presentaciones: vamos los de siempre y ya está.</div>
+          <div class="bub out">Vale, va.</div>
+          <span class="leido">Leído 21:14</span>
+        </div>
+        <div class="chat slide" role="group" aria-roledescription="conversación" aria-label="2 de 3: Pablo" aria-hidden="true">
+          <span class="quien">Pablo</span>
+          <div class="bub in">Este sábado hay Valeva. ¿Nos apuntamos los cuatro?</div>
+          <div class="bub out">Vale, va.</div>
+          <span class="leido">Leído 19:02</span>
+        </div>
+        <div class="chat slide" role="group" aria-roledescription="conversación" aria-label="3 de 3: María" aria-hidden="true">
+          <span class="quien">María</span>
+          <div class="bub in">En serio, que esto es diferente: no hay actividades forzadas ni nada de eso. Es todo muy normal.</div>
+          <div class="bub out">Vale, va.</div>
+          <span class="leido">Leído 20:37</span>
+        </div>
+        </div>
+        <div class="dots" role="group" aria-label="Elegir conversación">
+          <button type="button" class="dot" aria-label="Conversación con Lucía" aria-pressed="true"></button>
+          <button type="button" class="dot" aria-label="Conversación con Pablo" aria-pressed="false"></button>
+          <button type="button" class="dot" aria-label="Conversación con María" aria-pressed="false"></button>
+        </div>
       </div>
     </div>
   </div>
@@ -266,6 +286,10 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
       <li><b>A las 18:30 te llega el bar</b><span>El mismo sábado, tres horas antes, recibes la dirección por email o WhatsApp.</span></li>
       <li><b>A tu aire</b><span>Sentaos en vuestra mesa como en cualquier bar. Hablar con gente nueva es opcional.</span></li>
     </ol>
+    <figure class="mesa">
+      <img src="img/mesa.jpg" alt="Una mesa con cañas, vino, aceitunas y frutos secos">
+      <figcaption>La primera va incluida en la entrada.</figcaption>
+    </figure>
   </section>
 
   <section id="fechas" aria-labelledby="t-fechas">
@@ -276,7 +300,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     <div class="fechas" id="fechas-list" role="group" aria-label="Fechas disponibles"></div>
 
     <article class="event">
-      <div class="event-head">
+      <div class="event-head foto">
+        <img class="event-foto" src="img/barra.jpg" alt="" aria-hidden="true">
         <span class="fecha" id="ev-fecha"></span>
         <h3>Bar sorpresa en Valencia</h3>
         <div class="event-meta">
@@ -320,11 +345,6 @@ footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);f
     <span>Génesis 2, 18</span>
   </div>
 
-  <div class="fotos" aria-label="Así es una noche">
-    <img class="f1" src="img/grupo.jpg" alt="Un grupo de amigos charla en una mesa de un bar de Valencia por la noche">
-    <img src="img/mesa.jpg" alt="Una mesa con cañas, vino, aceitunas y frutos secos">
-    <img src="img/barra.jpg" alt="Barra de bar con azulejos azules y luz cálida">
-  </div>
 
   <section id="reserva" aria-labelledby="t-reserva">
     <div style="display:grid;gap:6px">
