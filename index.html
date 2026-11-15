@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valeva Valencia</title>
+<meta name="description" content="Dos sábados al mes, un bar de Valencia solo para solteros cristianos en tu mismo momento. Sin cita. Sin presión.">
+<link rel="icon" type="image/svg+xml" href="assets/valeva-simbolo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Concepto: "vale, va." — la respuesta de quien está harto de que le quieran ennoviar, pero este plan sí le convence.
+   Lenguaje visual de mensaje de móvil: blanco, tinta casi negra, un solo azul (el de la burbuja de "vale, va.").
+   "val" de Valencia destacado en la marca. Layout: columna limpia, mucho aire, tarjetas planas con bordes finos. */
+:root{
+  --bg:#ffffff;
+  --ink:#16181d;
+  --muted:#6b7079;
+  --line:#e9eaee;
+  --soft:#f5f6f8;
+  --accent:#2a5bd7;     /* azul burbuja: único color */
+  --accent-soft:#eef3fd;
+  --f:#2a5bd7;          /* mujeres en gráficos */
+  --m:#a9b1bf;          /* hombres en gráficos */
+  --font:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.6}
+a{color:var(--accent)}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--font);font-weight:800;color:var(--ink);text-wrap:balance;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(34px,7vw,54px);line-height:1.04;letter-spacing:-.035em}
+h2{font-size:clamp(26px,4.6vw,34px);line-height:1.12}
+h3{font-size:20px}
+h1 em,h2 em{font-style:normal;color:var(--accent)}
+
+header.top{position:sticky;top:0;z-index:50;background:#fff;box-shadow:0 0 0 100vmax #fff;clip-path:inset(0 -100vmax);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:20px 0;border-bottom:1px solid var(--line);transition:padding .2s}
+body.scrolled header.top{padding:12px 0}
+section,#fechas,#como,#preguntas,#bares,#reserva{scroll-margin-top:96px}
+.logo>span{display:inline-block;max-width:6em;overflow:hidden;transition:max-width .25s ease,opacity .2s ease}
+.menu-btn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);cursor:pointer;place-items:center;padding:0}
+.menu-btn path{transition:transform .2s,opacity .2s;transform-origin:12px 12px}
+.menu-btn[aria-expanded="true"] .l1{transform:translateY(5px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] .l2{opacity:0}
+.menu-btn[aria-expanded="true"] .l3{transform:translateY(-5px) rotate(-45deg)}
+.logo{display:inline-flex;align-items:center;gap:.32em;font-size:26px;font-weight:800;letter-spacing:-.05em;color:var(--ink);text-decoration:none;line-height:1}
+.logo .sym{width:1.45em;height:auto;flex:none}
+.logo b{color:var(--accent);font-weight:800}
+nav.top{display:flex;gap:20px}
+nav.top a{color:var(--muted);text-decoration:none;font-size:15px;font-weight:600}
+nav.top a:hover{color:var(--ink)}
+
+.hero{padding:40px 0 48px;display:grid;gap:22px}
+.mano{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero p.lead{max-width:56ch;margin:0;font-size:18px;color:#2c3038}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* Conversación */
+.chat{display:grid;gap:8px;padding:22px;border:1px solid var(--line);border-radius:24px;background:var(--soft)}
+.chat .quien{font-size:12px;font-weight:700;color:var(--muted);margin:0 0 2px 4px}
+.bub{max-width:85%;padding:11px 15px;border-radius:20px;font-size:16px;line-height:1.45}
+.bub.in{background:#fff;border:1px solid var(--line);border-bottom-left-radius:6px;justify-self:start}
+.bub.out{background:var(--accent);color:#fff;border-bottom-right-radius:6px;justify-self:end;font-weight:700;font-size:18px}
+.chat .leido{justify-self:end;font-size:12px;color:var(--muted);margin-right:4px}
+.carrusel{display:grid;gap:12px;max-width:440px}
+.slides{display:grid;overflow:hidden;border-radius:24px}
+.slides .slide{grid-area:1/1;align-content:start;transform:translateX(-105%);transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.slides .slide.on{transform:translateX(0)}
+.slides .slide.out{transform:translateX(105%)}
+.slides .slide.notrans{transition:none}
+.dots{display:flex;gap:4px;justify-content:center}
+.dot{width:28px;height:28px;border:0;background:transparent;padding:0;cursor:pointer;display:grid;place-items:center}
+.dot::before{content:"";width:8px;height:8px;border-radius:50%;background:#c9ccd3;transition:width .2s,background .2s}
+.dot[aria-pressed="true"]::before{width:22px;border-radius:999px;background:var(--ink)}
+@media (prefers-reduced-motion:reduce){.slides .slide{transition:none}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:14px 24px;font:700 16px var(--font);cursor:pointer;text-decoration:none}
+.btn:hover{background:#000}
+.btn.sec{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sec:hover{border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+section{padding:48px 0;display:grid;gap:22px;border-top:1px solid var(--line)}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* Fechas */
+.fechas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.fecha-btn{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:14px 16px;text-align:left;cursor:pointer;font:inherit;color:var(--ink);display:grid;gap:2px}
+.fecha-btn b{font-size:17px}
+.fecha-btn span{font-size:13px;color:var(--muted)}
+.fecha-btn:hover{border-color:#c9ccd3}
+.fecha-btn[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.fecha-btn[aria-pressed="true"] span{color:#c9ccd3}
+
+/* Tarjeta del sábado */
+.event{border:1px solid var(--line);border-radius:22px;overflow:hidden;background:#fff}
+.event-head{padding:22px 24px;display:grid;gap:4px;border-bottom:1px solid var(--line)}
+.event-head .fecha{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.event-head h3{font-size:24px}
+.event-meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15px;color:var(--muted)}
+.event-meta b{color:var(--ink)}
+.event-body{padding:24px;display:grid;gap:24px}
+.secreto{display:flex;gap:12px;align-items:flex-start;background:var(--accent-soft);border-radius:14px;padding:14px 16px;font-size:15px}
+.secreto svg{flex:none;margin-top:2px;color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;text-align:center}
+.stat .n{font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat .l{font-size:13px;color:var(--muted);font-weight:600}
+.stat.f .n{color:var(--f)} .stat.m .n{color:#7a8394}
+.bar-total{height:10px;border-radius:999px;background:var(--soft);overflow:hidden;display:flex}
+.bar-total i{display:block;height:100%}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.ages{display:grid;gap:10px}
+.age-row{display:grid;grid-template-columns:58px 1fr 30px;align-items:center;gap:10px;font-size:14px}
+.age-row .lab{color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.age-row .track{height:12px;background:var(--soft);border-radius:999px;display:flex;overflow:hidden}
+.age-row .track i{display:block;height:100%}
+.age-row .val{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0}
+.price{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:20px}
+.price .amt{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.price .amt small{display:block;font-size:14px;font-weight:500;letter-spacing:0;color:var(--muted);margin-top:6px}
+
+/* Cómo funciona */
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:0;margin:0;list-style:none;counter-reset:p}
+.pasos li{border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:6px;counter-increment:p;align-content:start}
+.pasos li::before{content:counter(p);font-size:14px;font-weight:800;color:#fff;background:var(--ink);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.pasos b{font-size:17px}
+.pasos span{color:var(--muted);font-size:15px}
+
+.cita{padding:36px 0;border-top:1px solid var(--line);display:grid;gap:6px}
+.cita p{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.25}
+.cita span{font-size:14px;color:var(--muted)}
+
+/* Fotos */
+.fotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-bottom:12px}
+.fotos img{width:100%;height:100%;aspect-ratio:16/10;object-fit:cover;border-radius:16px;display:block}
+.fotos .f1{grid-column:1/-1;aspect-ratio:16/8}
+
+/* Formulario */
+.panel{border:1px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:18px;background:#fff}
+form{display:grid;gap:16px}
+.field{display:grid;gap:6px}
+label,.lbl{font-size:15px;font-weight:600}
+input[type=text],input[type=email],select{width:100%;padding:13px 15px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:16px var(--font)}
+input[type=text]:focus,input[type=email]:focus,select:focus{border-color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px}
+.radios{display:flex;gap:10px}
+.radios label{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:12px;text-align:center;cursor:pointer;font-weight:600}
+.radios input{position:absolute;opacity:0}
+.radios label:has(input:checked){border-color:var(--ink);background:var(--ink);color:#fff}
+.radios label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.check{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:14px;color:var(--muted);font-weight:400}
+.check input{width:18px;height:18px;margin-top:3px;accent-color:var(--ink)}
+.err{color:#b42318;font-size:14px;min-height:1em;margin:0;font-weight:600}
+.hidden{display:none !important}
+.stepper{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+.stepper button{border:0;background:#fff;width:44px;height:44px;font:700 20px var(--font);color:var(--ink);cursor:pointer}
+.stepper button:disabled{color:#c9ccd3;cursor:default}
+.stepper output{min-width:40px;text-align:center;font-weight:800;font-size:17px}
+.acomp{border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:12px}
+.acomp-t{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.summary{display:grid;gap:8px;font-size:15px}
+.summary div{display:flex;justify-content:space-between;gap:12px}
+.summary div span:first-child{color:var(--muted)}
+.summary .tot{border-top:1px solid var(--line);padding-top:10px;font-weight:800;font-size:17px}
+.demo{font-size:13px;background:var(--soft);color:var(--muted);border-radius:10px;padding:10px 14px;margin:0}
+.ticket{border:1.5px dashed #c9ccd3;border-radius:20px;padding:24px;display:grid;gap:10px;text-align:center}
+.ticket .code{font-size:32px;font-weight:800;letter-spacing:.12em}
+.ticket .bub{justify-self:center}
+
+/* FAQ */
+.faq details{border-bottom:1px solid var(--line);padding:16px 0}
+.faq summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::after{content:"+";font-size:22px;color:var(--muted);line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq summary::-webkit-details-marker{display:none}
+.faq details p{color:var(--muted);margin:8px 0 0}
+
+.bares{background:var(--soft);border-radius:22px;padding:24px;display:grid;gap:12px}
+.bares ul{margin:0;padding-left:20px}
+.bares li{margin:4px 0}
+
+footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);font-size:14px;display:grid;gap:8px}
+
+@media (max-width:520px){
+  .menu-btn{display:grid;order:-1}
+  nav.top{order:1}
+  nav.top{display:none;width:100%;flex-direction:column;gap:0;margin-top:14px}
+  nav.top.open{display:flex}
+  nav.top a{font-size:18px;font-weight:700;color:var(--ink);padding:14px 2px;border-top:1px solid var(--line)}
+  .row2{grid-template-columns:1fr}
+  .row3{grid-template-columns:1fr 1fr}.row3 .field:first-child{grid-column:1/-1}
+  .stat .n{font-size:26px}
+  .hero{padding-top:28px}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#" aria-label="Valeva, inicio"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span>vale<b>va</b></span></a>
+    <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="l1" d="M4 7h16"></path><path class="l2" d="M4 12h16"></path><path class="l3" d="M4 17h16"></path></svg>
+    </button>
+    <nav class="top" id="menu" aria-label="Secciones">
+      <a href="#fechas">Fechas</a>
+      <a href="#como">Cómo funciona</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="#bares">Para bares</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <span class="mano">Sin cita · Sin presión</span>
+    <h1>Un bar lleno de gente <em>en tu mismo momento</em>.</h1>
+    <p class="lead">Dos sábados al mes reservamos un bar de Valencia solo para solteros cristianos en tu misma situación. Ven con tus amigos, sentaos en vuestra mesa y tomaos algo tranquilos. Si te apetece conocer a alguien, todos los que están allí comparten tu fe y tu momento. Y si no, has pasado una buena noche con los tuyos, ya habrá otras ocasiones.</p>
+    <div class="cta-row">
+      <a class="btn" href="#fechas">Ver próximas fechas</a>
+      <a class="btn sec" href="#como">Cómo funciona</a>
+    </div>
+    <div class="carrusel" aria-roledescription="carrusel" aria-label="Conversaciones de ejemplo">
+      <div class="slides">
+      <div class="chat slide on" role="group" aria-roledescription="conversación" aria-label="1 de 3: Lucía">
+        <span class="quien">Lucía</span>
+        <div class="bub in">¿Te vienes el sábado? Es un bar solo para solteros cristianos. Sin dinámicas ni presentaciones: vamos los de siempre y ya está.</div>
+        <div class="bub out">Vale, va.</div>
+        <span class="leido">Leído 21:14</span>
+      </div>
+      <div class="chat slide" role="group" aria-roledescription="conversación" aria-label="2 de 3: Pablo" aria-hidden="true">
+        <span class="quien">Pablo</span>
+        <div class="bub in">Este sábado hay Valeva. ¿Nos apuntamos los cuatro?</div>
+        <div class="bub out">Vale, va.</div>
+        <span class="leido">Leído 19:02</span>
+      </div>
+      <div class="chat slide" role="group" aria-roledescription="conversación" aria-label="3 de 3: María" aria-hidden="true">
+        <span class="quien">María</span>
+        <div class="bub in">En serio, que esto es diferente: no hay actividades forzadas ni nada de eso. Es todo muy normal.</div>
+        <div class="bub out">Vale, va.</div>
+        <span class="leido">Leído 20:37</span>
+      </div>
+      </div>
+      <div class="dots" role="group" aria-label="Elegir conversación">
+        <button type="button" class="dot" aria-label="Conversación con Lucía" aria-pressed="true"></button>
+        <button type="button" class="dot" aria-label="Conversación con Pablo" aria-pressed="false"></button>
+        <button type="button" class="dot" aria-label="Conversación con María" aria-pressed="false"></button>
+      </div>
+    </div>
+  </div>
+
+  <section id="fechas" aria-labelledby="t-fechas">
+    <div style="display:grid;gap:6px">
+      <span class="kicker">Próximas fechas</span>
+      <h2 id="t-fechas">Elige tu <em>sábado</em></h2>
+    </div>
+    <div class="fechas" id="fechas-list" role="group" aria-label="Fechas disponibles"></div>
+
+    <article class="event">
+      <div class="event-head">
+        <span class="fecha" id="ev-fecha"></span>
+        <h3>Bar sorpresa en Valencia</h3>
+        <div class="event-meta">
+          <span><b>Desde las 21:30</b></span>
+          <span>Aforo <b id="ev-aforo"></b></span>
+        </div>
+      </div>
+      <div class="event-body">
+        <div class="secreto">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--azul)"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <span>El bar se desvela el mismo sábado a las <b>18:30</b>. Te enviamos la dirección por email o WhatsApp, como prefieras.</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="n" id="s-total">0</span><span class="l">apuntados</span></div>
+          <div class="stat f"><span class="n" id="s-f">0</span><span class="l">mujeres</span></div>
+          <div class="stat m"><span class="n" id="s-m">0</span><span class="l">hombres</span></div>
+        </div>
+        <div style="display:grid;gap:8px">
+          <div class="bar-total" role="img" id="bar-total" aria-label=""></div>
+          <div class="legend">
+            <span style="--c:var(--f)">Mujeres</span>
+            <span style="--c:var(--m)">Hombres</span>
+            <span style="--c:var(--soft)" id="libres-l">Plazas libres</span>
+          </div>
+        </div>
+        <div style="display:grid;gap:12px">
+          <h3 style="font-size:19px">Quién va, por edades</h3>
+          <div class="ages" id="ages"></div>
+          <p class="note">Solo mostramos totales. Nadie ve nombres ni perfiles.</p>
+        </div>
+        <div class="price">
+          <div class="amt">5 €<small>Por persona · incluye la primera consumición</small><small style="margin-top:4px">Se paga al reservar: así el bar puede cerrar solo para nosotros.</small></div>
+          <a class="btn" href="#reserva">Reservar este sábado</a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section id="como" aria-labelledby="t-como">
+    <div style="display:grid;gap:6px">
+      <span class="kicker">Cómo funciona</span>
+      <h2 id="t-como">Nada de citas a ciegas. <em>Solo un bar.</em></h2>
+    </div>
+    <ol class="pasos">
+      <li><b>Elige un sábado</b><span>Hay dos al mes. Para cada uno ves cuánta gente va y de qué edades.</span></li>
+      <li><b>Reserva para ti o para tu grupo</b><span>5 € por persona, con la primera consumición incluida.</span></li>
+      <li><b>A las 18:30 te llega el bar</b><span>El mismo sábado, tres horas antes, recibes la dirección por email o WhatsApp.</span></li>
+      <li><b>A tu aire</b><span>Sentaos en vuestra mesa como en cualquier bar. Hablar con gente nueva es opcional.</span></li>
+    </ol>
+  </section>
+
+  <div class="cita">
+    <p>«No es bueno que el hombre esté solo.»</p>
+    <span>Génesis 2, 18</span>
+  </div>
+
+  <div class="fotos" aria-label="Así es una noche">
+    <img class="f1" src="img/grupo.jpg" alt="Un grupo de amigos charla en una mesa de un bar de Valencia por la noche">
+    <img src="img/mesa.jpg" alt="Una mesa con cañas, vino, aceitunas y frutos secos">
+    <img src="img/barra.jpg" alt="Barra de bar con azulejos azules y luz cálida">
+  </div>
+
+  <section id="reserva" aria-labelledby="t-reserva">
+    <div style="display:grid;gap:6px">
+      <span class="kicker">Reserva</span>
+      <h2 id="t-reserva">Guárdate <em>un sitio</em></h2>
+    </div>
+
+    <div class="panel" id="step-form">
+      <form id="f" novalidate>
+        <div class="field">
+          <label for="r-fecha">Sábado</label>
+          <select id="r-fecha"></select>
+        </div>
+        <div class="field">
+          <span class="lbl" id="n-l">¿Cuántos vais?</span>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div class="stepper" role="group" aria-labelledby="n-l">
+              <button type="button" id="menos" aria-label="Una persona menos">−</button>
+              <output id="n" aria-live="polite">1</output>
+              <button type="button" id="mas" aria-label="Una persona más">+</button>
+            </div>
+            <span class="note">Hasta 6 personas por reserva. Cada una necesita su entrada.</span>
+          </div>
+        </div>
+
+        <div class="acomp">
+          <span class="acomp-t">Tú</span>
+          <div class="row3">
+            <div class="field"><label for="p0-nombre">Nombre</label><input type="text" id="p0-nombre" autocomplete="given-name"></div>
+            <div class="field"><label for="p0-sexo">Sexo</label><select id="p0-sexo"><option value="">—</option><option value="f">Mujer</option><option value="m">Hombre</option></select></div>
+            <div class="field"><label for="p0-edad">Edad</label><select id="p0-edad" class="edad-sel"><option value="">—</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="email">Email</label><input type="email" id="email" autocomplete="email"></div>
+            <div class="field"><label for="tel">Móvil</label><input type="text" id="tel" inputmode="tel" autocomplete="tel" placeholder="6XX XX XX XX"></div>
+          </div>
+          <div class="field">
+            <span class="lbl" id="aviso-l">¿Por dónde te enviamos el bar?</span>
+            <div class="radios" role="radiogroup" aria-labelledby="aviso-l">
+              <label><input type="radio" name="aviso" id="aviso-email" value="email" checked><span>Email</span></label>
+              <label><input type="radio" name="aviso" id="aviso-wa" value="whatsapp"><span>WhatsApp</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div id="acomps" style="display:grid;gap:12px"></div>
+
+        <label class="check"><input type="checkbox" id="c-soltero"><span id="c-soltero-t">Soy soltero/a, cristiano/a y abierto/a a encontrar a alguien con quien construir un proyecto de vida.</span></label>
+        <label class="check"><input type="checkbox" id="c-rgpd"><span>Doy mi consentimiento explícito para que Valeva trate estos datos, incluida la fe, solo para gestionar la reserva, enviar la ubicación del bar y mostrar estadísticas anónimas. <a href="#privacidad">Política de privacidad</a>.</span></label>
+        <p class="err" id="err" role="alert"></p>
+        <button class="btn" type="submit" id="submit">Continuar al pago · 5 €</button>
+      </form>
+    </div>
+
+    <div class="panel hidden" id="step-pay" aria-live="polite">
+      <h3>Confirma tu reserva</h3>
+      <div class="summary" id="summary"></div>
+      <p class="demo">Versión de prueba: aquí irá el pago con tarjeta. Este botón no cobra nada.</p>
+      <div class="cta-row">
+        <button class="btn" id="pay">Pagar</button>
+        <button class="btn sec" id="back">Volver</button>
+      </div>
+    </div>
+
+    <div class="panel hidden" id="step-ok" aria-live="polite">
+      <div class="ticket">
+        <div class="bub out">Vale, va.</div>
+        <span class="mano" style="display:inline-flex;align-items:center;gap:8px;justify-content:center"><svg width="34" height="22" viewBox="20 30 150 95" aria-hidden="true"><polyline points="36,78 66,108 118,50" fill="none" stroke="#16181d" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#2a5bd7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>Reserva confirmada</span>
+        <h3 id="t-nombres"></h3>
+        <div id="t-fecha"></div>
+        <div class="code" id="code"></div>
+        <p class="note" id="t-aviso"></p>
+      </div>
+      <button class="btn sec" id="again">Hacer otra reserva</button>
+    </div>
+  </section>
+
+  <section id="preguntas" class="faq" aria-labelledby="t-faq">
+    <div style="display:grid;gap:6px">
+      <span class="kicker">Preguntas</span>
+      <h2 id="t-faq">Lo que <em>suele preguntarse</em></h2>
+    </div>
+    <div>
+      <details><summary>¿Tengo que hablar con gente que no conozco?</summary><p>No. Puedes ir con tus amigos, sentaros en vuestra mesa y no hablar con nadie más. La diferencia con otro bar es que, si un día te apetece, sabes que todos están en tu mismo momento y con la misma ilusión.</p></details>
+      <details><summary>¿Hay alguna actividad o dinámica?</summary><p>Ninguna. No hay presentaciones, juegos ni rondas. Es un bar normal reservado para la gente de Valeva.</p></details>
+      <details><summary>¿Por qué no sé el bar hasta el mismo día?</summary><p>Para que el local sea de verdad solo para quienes se han apuntado. A las 18:30 del sábado te enviamos la dirección por email o WhatsApp.</p></details>
+      <details><summary>¿Puedo ir con amigos?</summary><p>Sí, es lo normal. Haz una sola reserva para todo el grupo, hasta 6 personas. Cada uno tiene que estar en ese mismo momento: soltero y con ganas de encontrar a alguien con quien construir un proyecto de vida.</p></details>
+      <details><summary>¿Hay límite de edad?</summary><p>No. Como en cualquier bar, habrá mesas de gente más joven y más mayor. Antes de reservar puedes ver cuánta gente hay de cada franja.</p></details>
+      <details><summary>¿Qué incluyen los 5 €?</summary><p>La entrada y la primera consumición. Lo demás se paga en la barra, como siempre.</p></details>
+      <details><summary>¿Por qué se paga por adelantado?</summary><p>Porque así podemos reservar el bar solo para nosotros. Al pagar antes, el local sabe cuánta gente va a ir y tiene la primera consumición asegurada, así que le compensa cerrar sus puertas esa noche al resto del público.</p></details>
+      <details><summary>¿Y si al final no puedo ir?</summary><p>Puedes cancelar hasta el viernes a las 20:00 y te devolvemos el dinero.</p></details>
+    </div>
+  </section>
+
+  <section id="bares" aria-labelledby="t-bares">
+    <div class="bares">
+      <span class="kicker">Para bares</span>
+      <h2 id="t-bares">¿Tienes un bar en Valencia?</h2>
+      <p style="margin:0">Reserva tu local un sábado por la noche para Valeva y recibe un grupo de clientes con la primera consumición ya pagada.</p>
+      <ul>
+        <li>Entradas con la primera consumición incluida, pagadas antes del evento.</li>
+        <li>Todo lo que se consuma después es para el bar.</li>
+        <li>Público tranquilo, en grupos de amigos, que viene a pasar la noche.</li>
+        <li>Discreción: el nombre del bar solo lo reciben los apuntados, el mismo día.</li>
+      </ul>
+      <p style="margin:0">Escríbenos a <b>bares@valeva.es</b></p>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+  <footer id="privacidad">
+    <a class="logo" href="#" style="font-size:22px"><svg class="sym" viewBox="0 0 200 170" aria-hidden="true"><rect x="0" y="0" width="200" height="150" rx="46" fill="#2a5bd7"></rect><polygon points="146,138 200,170 190,112" fill="#2a5bd7"></polygon><polyline points="36,78 66,108 118,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="92,100 100,108 152,50" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span>vale<b>va</b></span></a><div>Sin cita. Sin presión. Dos sábados al mes, en Valencia, desde las 21:30.</div>
+    <div>Los datos de tu reserva solo se usan para gestionar tu entrada y enviarte la ubicación del bar. Las estadísticas que se muestran son siempre anónimas y agregadas.</div>
+    <div>Prototipo · fechas y datos de ejemplo</div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var FRANJAS=["25–30","31–35","36–40","41–45","46+"];
+  var MAX_GRUPO=6, PRECIO=5;
+  var EVENTOS=[
+    {id:"2026-11-21",corto:"Sáb 21 nov",largo:"Sábado 21 de noviembre",aforo:60,data:{"25–30":[5,4],"31–35":[7,6],"36–40":[4,6],"41–45":[2,3],"46+":[1,2]}},
+    {id:"2026-12-05",corto:"Sáb 5 dic",largo:"Sábado 5 de diciembre",aforo:60,data:{"25–30":[3,2],"31–35":[4,5],"36–40":[2,3],"41–45":[1,1],"46+":[0,1]}},
+    {id:"2026-12-19",corto:"Sáb 19 dic",largo:"Sábado 19 de diciembre",aforo:70,data:{"25–30":[1,2],"31–35":[2,1],"36–40":[1,1],"41–45":[0,1],"46+":[0,0]}},
+    {id:"2027-01-09",corto:"Sáb 9 ene",largo:"Sábado 9 de enero",aforo:60,data:{"25–30":[0,1],"31–35":[1,0],"36–40":[0,0],"41–45":[0,0],"46+":[0,0]}}
+  ];
+  var actual=EVENTOS[0];
+  function $(id){return document.getElementById(id);}
+  function totales(ev){var f=0,m=0;FRANJAS.forEach(function(k){f+=ev.data[k][0];m+=ev.data[k][1];});return {f:f,m:m,t:f+m};}
+
+  var lista=$("fechas-list"), rf=$("r-fecha");
+  EVENTOS.forEach(function(ev){
+    var b=document.createElement("button");b.type="button";b.className="fecha-btn";b.dataset.id=ev.id;
+    lista.appendChild(b);
+    var o=document.createElement("option");o.value=ev.id;o.textContent=ev.largo;rf.appendChild(o);
+  });
+  lista.addEventListener("click",function(e){var b=e.target.closest(".fecha-btn");if(b)elegir(b.dataset.id);});
+  rf.addEventListener("change",function(){elegir(rf.value,true);});
+
+  function elegir(id,desdeForm){
+    actual=EVENTOS.filter(function(e){return e.id===id;})[0];
+    if(!desdeForm) rf.value=id;
+    render();
+  }
+
+  function render(){
+    lista.querySelectorAll(".fecha-btn").forEach(function(b){
+      var ev=EVENTOS.filter(function(e){return e.id===b.dataset.id;})[0],t=totales(ev);
+      b.setAttribute("aria-pressed",ev===actual?"true":"false");
+      b.innerHTML="<b>"+ev.corto+"</b><span>"+t.t+" apuntados · "+Math.max(0,ev.aforo-t.t)+" libres</span>";
+    });
+    var t=totales(actual),libres=Math.max(0,actual.aforo-t.t),max=1;
+    FRANJAS.forEach(function(k){max=Math.max(max,actual.data[k][0]+actual.data[k][1]);});
+    $("ev-fecha").textContent=actual.largo;
+    $("ev-aforo").textContent=actual.aforo;
+    $("s-total").textContent=t.t;$("s-f").textContent=t.f;$("s-m").textContent=t.m;
+    $("libres-l").textContent="Plazas libres ("+libres+")";
+    var bt=$("bar-total");
+    bt.innerHTML='<i style="width:'+(t.f/actual.aforo*100)+'%;background:var(--f)"></i><i style="width:'+(t.m/actual.aforo*100)+'%;background:var(--m)"></i>';
+    bt.setAttribute("aria-label",t.f+" mujeres, "+t.m+" hombres, "+libres+" plazas libres de "+actual.aforo);
+    var ages=$("ages");ages.innerHTML="";
+    FRANJAS.forEach(function(k){
+      var a=actual.data[k][0],b=actual.data[k][1];
+      var r=document.createElement("div");r.className="age-row";
+      r.innerHTML='<span class="lab">'+k+'</span><span class="track" role="img" aria-label="'+k+' años: '+a+' mujeres, '+b+' hombres"><i style="width:'+(a/max*100)+'%;background:var(--f)"></i><i style="width:'+(b/max*100)+'%;background:var(--m)"></i></span><span class="val">'+(a+b)+'</span>';
+      ages.appendChild(r);
+    });
+  }
+
+  function opcionesEdad(sel){FRANJAS.forEach(function(f){var o=document.createElement("option");o.value=f;o.textContent=f;sel.appendChild(o);});}
+  opcionesEdad($("p0-edad"));
+
+  var n=1;
+  function pintarAcomp(){
+    var cont=$("acomps"),prev={};
+    cont.querySelectorAll("input,select").forEach(function(el){prev[el.id]=el.value;});
+    cont.innerHTML="";
+    for(var i=1;i<n;i++){
+      var d=document.createElement("div");d.className="acomp";
+      d.innerHTML='<span class="acomp-t">Acompañante '+i+'</span><div class="row3">'+
+        '<div class="field"><label for="p'+i+'-nombre">Nombre</label><input type="text" id="p'+i+'-nombre"></div>'+
+        '<div class="field"><label for="p'+i+'-sexo">Sexo</label><select id="p'+i+'-sexo"><option value="">—</option><option value="f">Mujer</option><option value="m">Hombre</option></select></div>'+
+        '<div class="field"><label for="p'+i+'-edad">Edad</label><select id="p'+i+'-edad"><option value="">—</option></select></div></div>';
+      cont.appendChild(d);
+      opcionesEdad(d.querySelector("#p"+i+"-edad"));
+    }
+    Object.keys(prev).forEach(function(id){var el=$(id);if(el)el.value=prev[id];});
+    $("n").textContent=n;
+    $("menos").disabled=n<=1;$("mas").disabled=n>=MAX_GRUPO;
+    $("submit").textContent="Continuar al pago · "+(n*PRECIO)+" €";
+    $("c-soltero-t").textContent=n===1?"Soy soltero/a, cristiano/a y abierto/a a encontrar a alguien con quien construir un proyecto de vida.":"Todas las personas de esta reserva somos solteras, cristianas y abiertas a encontrar a alguien con quien construir un proyecto de vida.";
+  }
+  $("menos").addEventListener("click",function(){if(n>1){n--;pintarAcomp();}});
+  $("mas").addEventListener("click",function(){if(n<MAX_GRUPO){n++;pintarAcomp();}});
+
+  var form=$("f"),err=$("err"),pending=null;
+  function show(id){["step-form","step-pay","step-ok"].forEach(function(s){$(s).classList.toggle("hidden",s!==id);});}
+  form.addEventListener("submit",function(e){
+    e.preventDefault();
+    var personas=[],msg="";
+    for(var i=0;i<n;i++){
+      var p={nombre:$("p"+i+"-nombre").value.trim(),sexo:$("p"+i+"-sexo").value,edad:$("p"+i+"-edad").value};
+      var quien=i===0?"tu":"del acompañante "+i;
+      if(!p.nombre){msg="Falta el nombre "+(i===0?"tuyo":quien)+".";break;}
+      if(!p.sexo){msg="Falta el sexo "+(i===0?"tuyo":quien)+".";break;}
+      if(!p.edad){msg="Falta la franja de edad "+(i===0?"tuya":quien)+".";break;}
+      personas.push(p);
+    }
+    var email=$("email").value.trim(),tel=$("tel").value.replace(/\s/g,"");
+    var aviso=document.querySelector('input[name="aviso"]:checked').value;
+    var t=totales(actual);
+    if(!msg && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) msg="Revisa el email: parece incompleto.";
+    else if(!msg && aviso==="whatsapp" && !/^\+?\d{9,12}$/.test(tel)) msg="Para recibir el bar por WhatsApp, escribe tu móvil.";
+    else if(!msg && t.t+n>actual.aforo) msg="No quedan plazas suficientes ese sábado. Prueba otra fecha.";
+    else if(!msg && !$("c-soltero").checked) msg="Marca la declaración para poder reservar.";
+    else if(!msg && !$("c-rgpd").checked) msg="Necesitamos tu consentimiento para tratar los datos de la reserva.";
+    err.textContent=msg;
+    if(msg) return;
+    pending={personas:personas,aviso:aviso,ev:actual};
+    var h='<div><span>Sábado</span><span>'+actual.largo+'</span></div><div><span>Lugar</span><span>Se desvela a las 18:30</span></div>';
+    personas.forEach(function(p){h+='<div><span>'+p.nombre+'</span><span>5,00 €</span></div>';});
+    h+='<div class="tot"><span>Total</span><span>'+(n*PRECIO)+',00 €</span></div>';
+    $("summary").innerHTML=h;
+    $("pay").textContent="Pagar "+(n*PRECIO)+" €";
+    show("step-pay");
+  });
+  $("back").addEventListener("click",function(){show("step-form");});
+  $("pay").addEventListener("click",function(){
+    if(!pending) return;
+    pending.personas.forEach(function(p){pending.ev.data[p.edad][p.sexo==="f"?0:1]++;});
+    render();
+    $("code").textContent="VA-"+Math.random().toString(36).slice(2,6).toUpperCase();
+    $("t-nombres").textContent=pending.personas.map(function(p){return p.nombre;}).join(", ");
+    $("t-fecha").innerHTML=pending.ev.largo+" · desde las 21:30<br>"+(pending.personas.length>1?pending.personas.length+" entradas":"1 entrada");
+    $("t-aviso").textContent="A las 18:30 de ese sábado te enviaremos la dirección del bar por "+(pending.aviso==="whatsapp"?"WhatsApp":"email")+". Enseña este código en la puerta.";
+    show("step-ok");pending=null;
+  });
+  $("again").addEventListener("click",function(){form.reset();n=1;pintarAcomp();err.textContent="";show("step-form");});
+
+  elegir(actual.id);pintarAcomp();
+})();
+
+(function(){
+  var slides=document.querySelectorAll(".slides .slide"),dots=document.querySelectorAll(".dot"),i=0,timer=null;
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function go(n){n=(n+slides.length)%slides.length;if(n===i)return;
+    var old=slides[i],nw=slides[n];i=n;
+    old.classList.remove("on");old.classList.add("out");old.setAttribute("aria-hidden","true");
+    nw.classList.add("notrans");nw.classList.remove("out");void nw.offsetWidth;nw.classList.remove("notrans");
+    nw.classList.add("on");nw.removeAttribute("aria-hidden");
+    setTimeout(function(){if(old.classList.contains("out")){old.classList.add("notrans");old.classList.remove("out");void old.offsetWidth;old.classList.remove("notrans");}},650);
+    dots.forEach(function(d,k){d.setAttribute("aria-pressed",k===i?"true":"false");});}
+  function start(){if(reduce)return;stop();timer=setInterval(function(){go(i+1);},5000);}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  dots.forEach(function(d,k){d.addEventListener("click",function(){go(k);start();});});
+  var c=document.querySelector(".carrusel");
+  c.addEventListener("mouseenter",stop);c.addEventListener("mouseleave",start);
+  c.addEventListener("focusin",stop);c.addEventListener("focusout",start);
+  start();
+})();
+
+(function(){
+  var b=document.getElementById("menu-btn"),m=document.getElementById("menu");
+  function set(o){m.classList.toggle("open",o);b.setAttribute("aria-expanded",o?"true":"false");b.setAttribute("aria-label",o?"Cerrar menú":"Abrir menú");}
+  b.addEventListener("click",function(){set(!m.classList.contains("open"));});
+  m.addEventListener("click",function(e){if(e.target.closest("a"))set(false);});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&m.classList.contains("open")){set(false);b.focus();}});
+})();
+
+(function(){
+  var b=document.body,t=false;
+  function u(){b.classList.toggle("scrolled",window.scrollY>40);t=false;}
+  window.addEventListener("scroll",function(){if(!t){t=true;requestAnimationFrame(u);}},{passive:true});
+  u();
+})();
+</script>
+</body>
+</html>
